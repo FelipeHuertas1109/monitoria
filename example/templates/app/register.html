@@ -1,0 +1,13 @@
+<!-- app/templates/app/register.html -->
+{% extends 'app/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Registrarse</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Crear Cuenta</button>
+    </form>
+</div>
+{% endblock %}

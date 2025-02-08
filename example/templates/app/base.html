@@ -1,0 +1,80 @@
+<!-- app/templates/app/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Proyecto Django Azul y Blanco</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f8ff; /* Azul muy claro */
+      }
+      header {
+        background-color: #1e90ff; /* DodgerBlue */
+        color: #ffffff;
+        padding: 1rem;
+      }
+      .navbar a {
+        color: #ffffff;
+        margin-right: 1rem;
+        text-decoration: none;
+      }
+      .container {
+        margin: 2rem auto;
+        max-width: 500px;
+        background-color: #ffffff; /* blanco */
+        border-radius: 5px;
+        padding: 2rem;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+      button {
+        background-color: #1e90ff;
+        border: none;
+        color: white;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 3px;
+      }
+      button:hover {
+        background-color: #4682b4; /* SteelBlue */
+      }
+      .messages {
+        margin: 1rem auto;
+        max-width: 500px;
+      }
+      .messages li {
+        background-color: #d0ebff;
+        padding: 0.5rem 1rem;
+        margin-bottom: 0.5rem;
+        border-left: 5px solid #1e90ff;
+        list-style: none;
+      }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="{% url 'index' %}">Inicio</a>
+            <a href="{% url 'login' %}">Iniciar Sesión</a>
+            <a href="{% url 'register' %}">Registrarse</a>
+            <a href="{% url 'logout' %}">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <!-- Mensajes de Django -->
+    <div class="messages">
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
