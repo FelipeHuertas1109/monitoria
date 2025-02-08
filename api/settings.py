@@ -76,7 +76,19 @@ WSGI_APPLICATION = 'api.wsgi.app'
 # Note: Django modules for using databases are not support in serverless
 # environments like Vercel. You can use a database over HTTP, hosted elsewhere.
 
-DATABASES = {}
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "neondb",
+        "USER": "neondb_owner",
+        "PASSWORD": "npg_pWLrjDF6U3nJ",  # la misma que funcionó en psql
+        "HOST": "ep-purple-brook-a4ff6ica-pooler.us-east-1.aws.neon.tech",
+        "PORT": "5432",
+        "OPTIONS": {
+            "sslmode": "require"
+        }
+    }
+}
 
 
 # Password validation
