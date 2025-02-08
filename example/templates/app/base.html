@@ -55,10 +55,13 @@
 <body>
     <header>
         <div class="navbar">
-            <a href="{% url 'index' %}">Inicio</a>
-            <a href="{% url 'login' %}">Iniciar Sesión</a>
-            <a href="{% url 'register' %}">Registrarse</a>
-            <a href="{% url 'logout' %}">Cerrar Sesión</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'index' %}">Inicio</a>
+                <a href="{% url 'logout' %}">Cerrar Sesión</a>
+            {% else %}
+                <a href="{% url 'login' %}">Iniciar Sesión</a>
+                <a href="{% url 'register' %}">Registrarse</a>
+            {% endif %}
         </div>
     </header>
 

@@ -8,3 +8,11 @@ class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ["username", "email", "password1", "password2"]
+
+from django import forms
+from .models import monday
+
+class UserPreferencesForm(forms.ModelForm):
+    class Meta:
+        model = monday
+        fields = ['morning', 'afternoon']
