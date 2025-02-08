@@ -1,0 +1,47 @@
+<!-- templates/app/add_preferences.html -->
+
+{% extends 'app/base.html' %}
+
+{% block content %}
+  <h1>Preferencias Semanales</h1>
+  <form method="post">
+    {% csrf_token %}
+    
+    <fieldset>
+      <legend>Lunes</legend>
+      {{ monday_form.as_p }}
+    </fieldset>
+    
+    <fieldset>
+      <legend>Martes</legend>
+      {{ tuesday_form.as_p }}
+    </fieldset>
+    
+    <fieldset>
+      <legend>Miércoles</legend>
+      {{ wednesday_form.as_p }}
+    </fieldset>
+    
+    <fieldset>
+      <legend>Jueves</legend>
+      {{ thursday_form.as_p }}
+    </fieldset>
+    
+    <fieldset>
+      <legend>Viernes</legend>
+      {{ friday_form.as_p }}
+    </fieldset>
+    
+    <fieldset>
+      <legend>Sábado</legend>
+      {{ saturday_form.as_p }}
+    </fieldset>
+    
+    <fieldset>
+      <legend>Domingo</legend>
+      {{ sunday_form.as_p }}
+    </fieldset>
+    
+    <button type="submit">Guardar Preferencias</button>
+  </form>
+{% endblock %}

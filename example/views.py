@@ -5,8 +5,6 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm
 from datetime import datetime
-from .models import monday
-from .forms import UserPreferencesForm
 from django.contrib.auth.decorators import login_required
 import pytz
 
@@ -34,20 +32,6 @@ def index_view(request):
         })
     else:
         return redirect("login")  # Redirige a la vista de login si no está autenticado
-
-@login_required
-def user_preferences_view(request):
-    preferences, created = monday.objects.get_or_create(user=request.user)
-
-    if request.method == "POST":
-        form = UserPreferencesForm(request.POST, instance=preferences)
-        if form.is_valid():
-            form.save()
-            return redirect('success_page')  # Redirige a una página de éxito
-    else:
-        form = UserPreferencesForm(instance=preferences)
-
-    return render(request, 'app/preferences.html', {'form': form})
 
 def register_view(request):
     if request.method == "POST":
@@ -77,3 +61,73 @@ def logout_view(request):
     logout(request)
     messages.success(request, "Has cerrado sesión.")
     return redirect("login")
+
+# views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+from .forms import (
+    MondayForm, TuesdayForm, WednesdayForm,
+    ThursdayForm, FridayForm, SaturdayForm, SundayForm
+)
+
+@login_required
+def add_preferences_view(request):
+    """
+    Vista para agregar o editar las preferencias de todos los días en una misma página.
+    La URL es /add/.
+    """
+    # Se obtienen o crean las instancias para cada día asociadas al usuario autenticado.
+    monday, _   = Monday.objects.get_or_create(user=request.user)
+    tuesday, _  = Tuesday.objects.get_or_create(user=request.user)
+    wednesday, _= Wednesday.objects.get_or_create(user=request.user)
+    thursday, _ = Thursday.objects.get_or_create(user=request.user)
+    friday, _   = Friday.objects.get_or_create(user=request.user)
+    saturday, _ = Saturday.objects.get_or_create(user=request.user)
+    sunday, _   = Sunday.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        # Se instancian los formularios con los datos del POST y un prefix para diferenciarlos.
+        monday_form    = MondayForm(request.POST, instance=monday, prefix='mon')
+        tuesday_form   = TuesdayForm(request.POST, instance=tuesday, prefix='tue')
+        wednesday_form = WednesdayForm(request.POST, instance=wednesday, prefix='wed')
+        thursday_form  = ThursdayForm(request.POST, instance=thursday, prefix='thu')
+        friday_form    = FridayForm(request.POST, instance=friday, prefix='fri')
+        saturday_form  = SaturdayForm(request.POST, instance=saturday, prefix='sat')
+        sunday_form    = SundayForm(request.POST, instance=sunday, prefix='sun')
+        
+        # Se valida que todos los formularios sean correctos.
+        if (monday_form.is_valid() and tuesday_form.is_valid() and wednesday_form.is_valid() and
+            thursday_form.is_valid() and friday_form.is_valid() and saturday_form.is_valid() and
+            sunday_form.is_valid()):
+            
+            monday_form.save()
+            tuesday_form.save()
+            wednesday_form.save()
+            thursday_form.save()
+            friday_form.save()
+            saturday_form.save()
+            sunday_form.save()
+            
+            # Redirige a la misma URL o a otra página de éxito.
+            return redirect('add')
+    else:
+        # En caso de GET se instancian los formularios con la instancia actual y un prefix.
+        monday_form    = MondayForm(instance=monday, prefix='mon')
+        tuesday_form   = TuesdayForm(instance=tuesday, prefix='tue')
+        wednesday_form = WednesdayForm(instance=wednesday, prefix='wed')
+        thursday_form  = ThursdayForm(instance=thursday, prefix='thu')
+        friday_form    = FridayForm(instance=friday, prefix='fri')
+        saturday_form  = SaturdayForm(instance=saturday, prefix='sat')
+        sunday_form    = SundayForm(instance=sunday, prefix='sun')
+    
+    context = {
+        'monday_form': monday_form,
+        'tuesday_form': tuesday_form,
+        'wednesday_form': wednesday_form,
+        'thursday_form': thursday_form,
+        'friday_form': friday_form,
+        'saturday_form': saturday_form,
+        'sunday_form': sunday_form,
+    }
+    return render(request, 'app/add_preferences.html', context)
