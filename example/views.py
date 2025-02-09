@@ -5,33 +5,67 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm
 from datetime import datetime
-from django.contrib.auth.decorators import login_required
 import pytz
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+from .forms import (
+    MondayForm, TuesdayForm, WednesdayForm,
+    ThursdayForm, FridayForm, SaturdayForm, SundayForm
+)
 
+@login_required
 def index_view(request):
-    if request.user.is_authenticated:
-        # Zona horaria de Bogotá
-        zona_bogota = pytz.timezone("America/Bogota")
-        fecha_actual = datetime.now(zona_bogota)  # Obtiene la fecha y hora de Bogotá
-
-        # Obtener el día de la semana (0 = lunes, 6 = domingo)
-        dias_semana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
-        dia_actual = fecha_actual.weekday()  # Devuelve 0 (Lunes) a 6 (Domingo)
-        nombre_dia = dias_semana[dia_actual]  # Convertir número en nombre del día
-
-        # Determinar si es fin de semana
-        if dia_actual == 5 or dia_actual == 6:  # 5 = Sábado, 6 = Domingo
-            mensaje = "🎉 ¡Es fin de semana! Disfruta tu descanso. 🚀"
+    """
+    Vista de inicio que muestra el mensaje de acuerdo al día actual y las preferencias configuradas
+    para el usuario autenticado, utilizando la zona horaria de Bogotá.
+    """
+    # Zona horaria de Bogotá
+    zona_bogota = pytz.timezone("America/Bogota")
+    fecha_actual = datetime.now(zona_bogota)
+    
+    # Listas para obtener el atributo (nombre en inglés para acceder al objeto relacionado)
+    # y el nombre para mostrar en español
+    dias_atributo = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    dias_display = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+    
+    # Obtener el índice del día actual (0 = lunes, 6 = domingo)
+    dia_index = fecha_actual.weekday()
+    day_attr = dias_atributo[dia_index]   # por ejemplo, "sunday"
+    nombre_dia = dias_display[dia_index]   # por ejemplo, "Domingo"
+    
+    # Mapeo de nombre de atributo al modelo correspondiente
+    models_mapping = {
+        "monday": Monday,
+        "tuesday": Tuesday,
+        "wednesday": Wednesday,
+        "thursday": Thursday,
+        "friday": Friday,
+        "saturday": Saturday,
+        "sunday": Sunday,
+    }
+    
+    # Obtener (o crear si no existe) la instancia de preferencias para el día actual
+    ModelClass = models_mapping[day_attr]
+    preferences, created = ModelClass.objects.get_or_create(user=request.user)
+    
+    # Definir el período según la hora actual: si es antes de las 12 es "morning", sino "afternoon"
+    time_period = "morning" if fecha_actual.hour < 12 else "afternoon"
+    
+    # Construir el mensaje de acuerdo a la preferencia marcada
+    if getattr(preferences, time_period, False):
+        if time_period == "morning":
+            mensaje = f"Tienes chamba el {nombre_dia} en la mañana."
         else:
-            mensaje = "💼 Es un día de semana. ¡A trabajar duro!"
-
-        return render(request, "app/index.html", {
-            "dia": nombre_dia,
-            "hora": fecha_actual.strftime("%I:%M %p"),  # Formato de hora 12h AM/PM
-            "mensaje": mensaje
-        })
+            mensaje = f"Tienes chamba el {nombre_dia} en la tarde."
     else:
-        return redirect("login")  # Redirige a la vista de login si no está autenticado
+        mensaje = "Hoy no chambeas."
+    
+    return render(request, "app/index.html", {
+        "dia": nombre_dia,
+        "hora": fecha_actual.strftime("%I:%M %p"),
+        "mensaje": mensaje
+    })
 
 def register_view(request):
     if request.method == "POST":
@@ -61,15 +95,6 @@ def logout_view(request):
     logout(request)
     messages.success(request, "Has cerrado sesión.")
     return redirect("login")
-
-# views.py
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
-from .forms import (
-    MondayForm, TuesdayForm, WednesdayForm,
-    ThursdayForm, FridayForm, SaturdayForm, SundayForm
-)
 
 @login_required
 def add_preferences_view(request):
