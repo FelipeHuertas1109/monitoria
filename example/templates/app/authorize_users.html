@@ -1,0 +1,56 @@
+<!-- app/templates/app/authorize_users.html -->
+{% extends "app/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Autorización para {{ nombre_dia }}</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Chamba Mañana</th>
+                <th>Autorizado Mañana</th>
+                <th>Acción Mañana</th>
+                <th>Chamba Tarde</th>
+                <th>Autorizado Tarde</th>
+                <th>Acción Tarde</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pref in preferences_list %}
+            <tr>
+                <td>{{ pref.user.username }}</td>
+                <td>{{ pref.morning|yesno:"Sí,No" }}</td>
+                <td>{{ pref.morning_authorized|yesno:"Sí,No" }}</td>
+                <td>
+                    {% if pref.morning and not pref.morning_authorized %}
+                    <form action="{% url 'authorize_mark' pref.id 'morning' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm">Autorizar Mañana</button>
+                    </form>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>{{ pref.afternoon|yesno:"Sí,No" }}</td>
+                <td>{{ pref.afternoon_authorized|yesno:"Sí,No" }}</td>
+                <td>
+                    {% if pref.afternoon and not pref.afternoon_authorized %}
+                    <form action="{% url 'authorize_mark' pref.id 'afternoon' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm">Autorizar Tarde</button>
+                    </form>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No hay usuarios con chamba para {{ nombre_dia }}.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

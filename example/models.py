@@ -1,65 +1,41 @@
+# app/models.py
+
 from django.db import models
 from django.contrib.auth.models import User
 
-class Monday(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="monday")
-    morning = models.BooleanField(default=False)
-    afternoon = models.BooleanField(default=False)
-    cont = models.IntegerField(default=0)
+class BaseDayPreference(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    morning = models.BooleanField(default=False)         # Si tiene chamba en la mañana
+    afternoon = models.BooleanField(default=False)         # Si tiene chamba en la tarde
+    cont = models.FloatField(default=0)                    # Contador acumulado (Float para permitir decimales)
+    morning_marked = models.BooleanField(default=False)    # Indica si ya se presionó el botón en la mañana
+    afternoon_marked = models.BooleanField(default=False)  # Indica si ya se presionó el botón en la tarde
+    morning_authorized = models.BooleanField(default=False)    # Indica si el superusuario autorizó la mañana
+    afternoon_authorized = models.BooleanField(default=False)  # Indica si el superusuario autorizó la tarde
+
+    class Meta:
+        abstract = True
 
     def __str__(self):
-        return f"Preferencias de {self.user.username} - Lunes"
+        return f"Preferencias de {self.user.username} - {self.day_name}"
 
-class Tuesday(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="tuesday")
-    morning = models.BooleanField(default=False)
-    afternoon = models.BooleanField(default=False)
-    cont = models.IntegerField(default=0)
+class Monday(BaseDayPreference):
+    day_name = "Lunes"
 
-    def __str__(self):
-        return f"Preferencias de {self.user.username} - Martes"
+class Tuesday(BaseDayPreference):
+    day_name = "Martes"
 
-class Wednesday(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="wednesday")
-    morning = models.BooleanField(default=False)
-    afternoon = models.BooleanField(default=False)
-    cont = models.IntegerField(default=0)
+class Wednesday(BaseDayPreference):
+    day_name = "Miércoles"
 
-    def __str__(self):
-        return f"Preferencias de {self.user.username} - Miércoles"
+class Thursday(BaseDayPreference):
+    day_name = "Jueves"
 
-class Thursday(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="thursday")
-    morning = models.BooleanField(default=False)
-    afternoon = models.BooleanField(default=False)
-    cont = models.IntegerField(default=0)
+class Friday(BaseDayPreference):
+    day_name = "Viernes"
 
-    def __str__(self):
-        return f"Preferencias de {self.user.username} - Jueves"
+class Saturday(BaseDayPreference):
+    day_name = "Sábado"
 
-class Friday(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="friday")
-    morning = models.BooleanField(default=False)
-    afternoon = models.BooleanField(default=False)
-    cont = models.IntegerField(default=0)
-
-    def __str__(self):
-        return f"Preferencias de {self.user.username} - Viernes"
-
-class Saturday(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="saturday")
-    morning = models.BooleanField(default=False)
-    afternoon = models.BooleanField(default=False)
-    cont = models.IntegerField(default=0)
-
-    def __str__(self):
-        return f"Preferencias de {self.user.username} - Sábado"
-
-class Sunday(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="sunday")
-    morning = models.BooleanField(default=False)
-    afternoon = models.BooleanField(default=False)
-    cont = models.IntegerField(default=0)
-
-    def __str__(self):
-        return f"Preferencias de {self.user.username} - Domingo"
+class Sunday(BaseDayPreference):
+    day_name = "Domingo"

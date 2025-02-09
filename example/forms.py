@@ -1,19 +1,18 @@
+# app/forms.py
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2"]
-
+        fields = ['username', 'email', 'password1', 'password2']
 
 class BaseDayPreferenceForm(forms.ModelForm):
     """
-    Formulario base para las preferencias diarias con los campos en común.
+    Formulario base para las preferencias diarias (campos comunes: morning, afternoon y cont).
     """
     class Meta:
         fields = ['morning', 'afternoon']

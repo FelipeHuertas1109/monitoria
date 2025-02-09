@@ -6,5 +6,11 @@
     <h2>Hoy es {{ dia }}</h2>
     <p>La hora en Bogotá es: {{ hora }}</p>
     <p>{{ mensaje }}</p>
+    {% if mostrar_boton %}
+      <form action="{% url 'mark_work' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Marcar</button>
+      </form>
+    {% endif %}
 </div>
 {% endblock %}
