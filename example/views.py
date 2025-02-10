@@ -251,10 +251,15 @@ def authorize_users_view(request):
     })
 
 @login_required
-def authorize_mark_view(request, pref_id, period):
+def authorize_mark_view(request, pref_id, period, action):
     """
-    Vista que procesa la autorización de un período para una preferencia en particular.
-    Solo el superusuario puede autorizar.
+    Procesa la autorización o desautorización de un período para una preferencia en particular.
+    Solo el superusuario puede realizar esta acción.
+    
+    Parámetros:
+      - pref_id: ID de la preferencia.
+      - period: 'morning' o 'afternoon'.
+      - action: 'authorize' para autorizar o 'deauthorize' para desautorizar.
     """
     if not request.user.is_superuser:
         messages.error(request, "No tienes permiso para acceder a esta acción.")
@@ -288,10 +293,80 @@ def authorize_mark_view(request, pref_id, period):
         messages.error(request, "No se encontró la preferencia.")
         return redirect("authorize_users")
     
-    if period == "morning":
-        preference.morning_authorized = True
+    if action == "authorize":
+        if period == "morning":
+            preference.morning_authorized = True
+        else:
+            preference.afternoon_authorized = True
+        messages.success(request, f"Se autorizó {period} para el usuario {preference.user.username}.")
+    elif action == "deauthorize":
+        if period == "morning":
+            preference.morning_authorized = False
+        else:
+            preference.afternoon_authorized = False
+        messages.success(request, f"Se desautorizó {period} para el usuario {preference.user.username}.")
     else:
-        preference.afternoon_authorized = True
+        messages.error(request, "Acción no válida.")
+        return redirect("authorize_users")
+    
     preference.save()
-    messages.success(request, f"Se autorizó {period} para el usuario {preference.user.username}.")
     return redirect("authorize_users")
+
+# app/views.py (al final del archivo)
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+
+@login_required
+def report_users_view(request):
+    """
+    Vista para el superusuario que muestra una lista de todos los usuarios.
+    Cada usuario tiene un botón "Reporte" para ver el total de horas acumuladas.
+    """
+    if not request.user.is_superuser:
+        messages.error(request, "No tienes permiso para acceder a esta página.")
+        return redirect("index")
+    
+    users = User.objects.all().order_by('username')
+    return render(request, "app/report_users.html", {"users": users})
+
+@login_required
+def user_report_view(request, user_id):
+    """
+    Vista que muestra el reporte para un usuario en particular.
+    Obtiene los registros de cada día (creándolos si no existen) y suma el total de horas.
+    """
+    if not request.user.is_superuser:
+        messages.error(request, "No tienes permiso para acceder a esta página.")
+        return redirect("index")
+    
+    user_obj = get_object_or_404(User, pk=user_id)
+    
+    # Para cada día, obtener (o crear) la instancia y tomar el valor de 'cont'
+    monday_obj, _    = Monday.objects.get_or_create(user=user_obj)
+    tuesday_obj, _   = Tuesday.objects.get_or_create(user=user_obj)
+    wednesday_obj, _ = Wednesday.objects.get_or_create(user=user_obj)
+    thursday_obj, _  = Thursday.objects.get_or_create(user=user_obj)
+    friday_obj, _    = Friday.objects.get_or_create(user=user_obj)
+    saturday_obj, _  = Saturday.objects.get_or_create(user=user_obj)
+    sunday_obj, _    = Sunday.objects.get_or_create(user=user_obj)
+    
+    # Crear una lista con el desglose por día (nombre y horas)
+    days = [
+        ("Lunes", monday_obj.cont),
+        ("Martes", tuesday_obj.cont),
+        ("Miércoles", wednesday_obj.cont),
+        ("Jueves", thursday_obj.cont),
+        ("Viernes", friday_obj.cont),
+        ("Sábado", saturday_obj.cont),
+        ("Domingo", sunday_obj.cont),
+    ]
+    
+    # Calcular el total de horas
+    total = sum(hours for _, hours in days)
+    
+    context = {
+        "user_obj": user_obj,
+        "days": days,
+        "total": total,
+    }
+    return render(request, "app/user_report.html", context)

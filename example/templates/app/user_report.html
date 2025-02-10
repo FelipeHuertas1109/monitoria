@@ -1,0 +1,29 @@
+<!-- app/templates/app/user_report.html -->
+{% extends "app/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Reporte de {{ user_obj.username }}</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Día</th>
+                <th>Horas</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for day, hours in days %}
+            <tr>
+                <td>{{ day }}</td>
+                <td>{{ hours }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <th>Total</th>
+                <th>{{ total }}</th>
+            </tr>
+        </tbody>
+    </table>
+    <a href="{% url 'report_users' %}" class="btn btn-secondary">Volver</a>
+</div>
+{% endblock %}

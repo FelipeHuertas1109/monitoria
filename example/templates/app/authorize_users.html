@@ -23,25 +23,43 @@
                 <td>{{ pref.morning|yesno:"Sí,No" }}</td>
                 <td>{{ pref.morning_authorized|yesno:"Sí,No" }}</td>
                 <td>
-                    {% if pref.morning and not pref.morning_authorized %}
-                    <form action="{% url 'authorize_mark' pref.id 'morning' %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-success btn-sm">Autorizar Mañana</button>
-                    </form>
+                    {% if pref.morning %}
+                        {% if pref.morning_authorized %}
+                        <!-- Botón para desautorizar -->
+                        <form action="{% url 'authorize_mark' pref.id 'morning' 'deauthorize' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Desautorizar Mañana</button>
+                        </form>
+                        {% else %}
+                        <!-- Botón para autorizar -->
+                        <form action="{% url 'authorize_mark' pref.id 'morning' 'authorize' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm">Autorizar Mañana</button>
+                        </form>
+                        {% endif %}
                     {% else %}
-                    -
+                        -
                     {% endif %}
                 </td>
                 <td>{{ pref.afternoon|yesno:"Sí,No" }}</td>
                 <td>{{ pref.afternoon_authorized|yesno:"Sí,No" }}</td>
                 <td>
-                    {% if pref.afternoon and not pref.afternoon_authorized %}
-                    <form action="{% url 'authorize_mark' pref.id 'afternoon' %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-success btn-sm">Autorizar Tarde</button>
-                    </form>
+                    {% if pref.afternoon %}
+                        {% if pref.afternoon_authorized %}
+                        <!-- Botón para desautorizar -->
+                        <form action="{% url 'authorize_mark' pref.id 'afternoon' 'deauthorize' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Desautorizar Tarde</button>
+                        </form>
+                        {% else %}
+                        <!-- Botón para autorizar -->
+                        <form action="{% url 'authorize_mark' pref.id 'afternoon' 'authorize' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm">Autorizar Tarde</button>
+                        </form>
+                        {% endif %}
                     {% else %}
-                    -
+                        -
                     {% endif %}
                 </td>
             </tr>
