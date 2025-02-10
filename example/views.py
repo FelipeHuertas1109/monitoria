@@ -209,10 +209,6 @@ def logout_view(request):
     messages.success(request, "Has cerrado sesión.")
     return redirect("login")
 
-# -----------------------------
-# Vistas para autorización
-# -----------------------------
-
 @login_required
 def authorize_users_view(request):
     """
