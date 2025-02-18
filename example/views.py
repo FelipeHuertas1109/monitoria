@@ -370,3 +370,61 @@ def user_report_view(request, user_id):
         "total": total,
     }
     return render(request, "app/user_report.html", context)
+
+from .forms import RecoverHoursForm
+from django.contrib.auth.models import User
+@login_required
+def recover_hours_view(request):
+    if not request.user.is_superuser:
+        messages.error(request, "No tienes permiso para acceder a esta acción.")
+        return redirect("index")
+    
+    if request.method == 'POST':
+        form = RecoverHoursForm(request.POST)
+        if form.is_valid():
+            selected_user = form.cleaned_data['user']
+            period = form.cleaned_data['period']
+            hours = form.cleaned_data['hours']
+            
+            # Usar la zona horaria de Bogotá y determinar el día actual
+            zona_bogota = pytz.timezone("America/Bogota")
+            fecha_actual = datetime.now(zona_bogota)
+            dias_atributo = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+            dia_index = fecha_actual.weekday()
+            day_attr = dias_atributo[dia_index]
+            
+            models_mapping = {
+                "monday": Monday,
+                "tuesday": Tuesday,
+                "wednesday": Wednesday,
+                "thursday": Thursday,
+                "friday": Friday,
+                "saturday": Saturday,
+                "sunday": Sunday,
+            }
+            ModelClass = models_mapping[day_attr]
+            record, created = ModelClass.objects.get_or_create(user=selected_user)
+            
+            # Actualizar el registro según el período seleccionado
+            if period == "morning":
+                record.morning = True
+                record.morning_authorized = True
+                record.morning_marked = False
+            else:
+                record.afternoon = True
+                record.afternoon_authorized = True
+                record.afternoon_marked = False
+            
+            # Sumar las horas a recuperar
+            record.cont += hours
+            record.save()
+            
+            messages.success(
+                request,
+                f"Se han recuperado {hours} horas para el usuario {selected_user.username} en el período { 'Mañana' if period=='morning' else 'Tarde' }."
+            )
+            return redirect("authorize_users")
+    else:
+        form = RecoverHoursForm()
+    
+    return render(request, "app/recover_hours.html", {"form": form})

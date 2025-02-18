@@ -1,0 +1,13 @@
+<!-- app/templates/app/recover_hours.html -->
+{% extends "app/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Recuperar Horas</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Recuperar Horas</button>
+    </form>
+</div>
+{% endblock %}

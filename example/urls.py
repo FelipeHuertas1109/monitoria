@@ -5,7 +5,8 @@ from .views import (
     index_view, mark_work_view, add_preferences_view,
     register_view, login_view, logout_view,
     authorize_users_view, authorize_mark_view,
-    report_users_view, user_report_view  # Importar las nuevas vistas
+    report_users_view, user_report_view,
+      recover_hours_view  # Importar las nuevas vistas
 )
 
 urlpatterns = [
@@ -21,4 +22,5 @@ urlpatterns = [
     # Nuevas rutas para reportes
     path('report-users/', report_users_view, name='report_users'),
     path('report/<int:user_id>/', user_report_view, name='user_report'),
+    path('recover_hours/', recover_hours_view, name='recover_hours'),
 ]

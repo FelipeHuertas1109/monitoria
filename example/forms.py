@@ -4,15 +4,28 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
-from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
+class RecoverHoursForm(forms.Form):
+    user = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        label="Usuario"
+    )
+    period = forms.ChoiceField(
+        choices=[('morning', 'Mañana'), ('afternoon', 'Tarde')],
+        label="Período"
+    )
+    hours = forms.FloatField(
+        label="Horas a recuperar",
+        min_value=0
+    )
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(
         label="Correo electrónico",
         required=True,
-        help_text="Ingrese su dirección de correo electrónico."
+        widget=forms.EmailInput(attrs={'placeholder': 'Correo electrónico'})
     )
     
     class Meta:
@@ -22,18 +35,27 @@ class UserRegisterForm(UserCreationForm):
             'username': 'Nombre de usuario',
             'email': 'Correo electrónico',
             'password1': 'Contraseña',
-            'password2': 'Confirmación de contraseña',
+            'password2': 'Confirmar Contraseña',
         }
+        # Se definen vacíos para evitar los textos por defecto
         help_texts = {
-            'username': 'Requerido. 150 caracteres o menos. Solo letras, dígitos y @/./+/-/_.',
-            'password1': (
-                'Tu contraseña no puede ser demasiado similar a tu otra información personal.\n'
-                'Tu contraseña debe contener al menos 8 caracteres.\n'
-                'Tu contraseña no puede ser una contraseña común.\n'
-                'Tu contraseña no puede ser completamente numérica.'
-            ),
-            'password2': 'Introduce la misma contraseña que antes, para verificación.'
+            'username': '',
+            'email': '',
+            'password1': '',
+            'password2': '',
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Remover los textos de ayuda de los campos de contraseña
+        self.fields['password1'].help_text = ''
+        self.fields['password2'].help_text = ''
+        # Actualizar los labels (por si acaso)
+        self.fields['username'].label = "Nombre de usuario"
+        self.fields['email'].label = "Correo electrónico"
+        self.fields['password1'].label = "Contraseña"
+        self.fields['password2'].label = "Confirmar Contraseña"
+        
 
 class BaseDayPreferenceForm(forms.ModelForm):
     """
@@ -41,6 +63,10 @@ class BaseDayPreferenceForm(forms.ModelForm):
     """
     class Meta:
         fields = ['morning', 'afternoon']
+        labels = {
+            'morning': 'Mañana',
+            'afternoon': 'Tarde'
+        }
 
 class MondayForm(BaseDayPreferenceForm):
     class Meta(BaseDayPreferenceForm.Meta):
