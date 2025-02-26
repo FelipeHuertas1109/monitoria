@@ -76,13 +76,9 @@ def index_view(request):
     })
 
 @login_required
+
+
 def mark_work_view(request):
-    """
-    Procesa el clic en el botón "Marcar":
-    - Si es mañana y el usuario no ha marcado, incrementa 'cont' en 4 y marca la mañana.
-    - Si es tarde y el usuario no ha marcado, incrementa 'cont' en 3.5 y marca la tarde.
-    Solo se permite marcar una vez por período.
-    """
     if request.method == 'POST':
         zona_bogota = pytz.timezone("America/Bogota")
         fecha_actual = datetime.now(zona_bogota)
@@ -108,7 +104,8 @@ def mark_work_view(request):
             if preferences.morning_marked:
                 messages.info(request, "Ya has marcado en la mañana.")
             else:
-                preferences.cont += 4
+                # Se usa el valor configurable (por defecto 4)
+                preferences.cont += preferences.morning_hours
                 preferences.morning_marked = True
                 preferences.save()
                 messages.success(request, "Has marcado tu chamba de la mañana.")
@@ -116,7 +113,8 @@ def mark_work_view(request):
             if preferences.afternoon_marked:
                 messages.info(request, "Ya has marcado en la tarde.")
             else:
-                preferences.cont += 4
+                # Se usa el valor configurable (por defecto 4)
+                preferences.cont += preferences.afternoon_hours
                 preferences.afternoon_marked = True
                 preferences.save()
                 messages.success(request, "Has marcado tu chamba de la tarde.")
@@ -431,3 +429,52 @@ def recover_hours_view(request):
         form = RecoverHoursForm()
     
     return render(request, "app/recover_hours.html", {"form": form})
+
+# app/views.py
+
+@login_required
+def update_hours_view(request, pref_id, period):
+    if not request.user.is_superuser:
+        messages.error(request, "No tienes permiso para acceder a esta acción.")
+        return redirect("index")
+    if request.method == "POST":
+        new_hours = request.POST.get("hours")
+        try:
+            new_hours = float(new_hours)
+        except (ValueError, TypeError):
+            messages.error(request, "Valor de horas no válido.")
+            return redirect("authorize_users")
+        
+        # Se determina el registro correspondiente al día actual.
+        zona_bogota = pytz.timezone("America/Bogota")
+        fecha_actual = datetime.now(zona_bogota)
+        dias_atributo = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        dia_index = fecha_actual.weekday()
+        day_attr = dias_atributo[dia_index]
+        models_mapping = {
+            "monday": Monday,
+            "tuesday": Tuesday,
+            "wednesday": Wednesday,
+            "thursday": Thursday,
+            "friday": Friday,
+            "saturday": Saturday,
+            "sunday": Sunday,
+        }
+        ModelClass = models_mapping[day_attr]
+        try:
+            record = ModelClass.objects.get(id=pref_id)
+        except ModelClass.DoesNotExist:
+            messages.error(request, "Registro no encontrado.")
+            return redirect("authorize_users")
+        
+        if period == "morning":
+            record.morning_hours = new_hours
+        elif period == "afternoon":
+            record.afternoon_hours = new_hours
+        else:
+            messages.error(request, "Período no válido.")
+            return redirect("authorize_users")
+        
+        record.save()
+        messages.success(request, f"Se actualizó las horas de { 'Mañana' if period=='morning' else 'Tarde' } a {new_hours} para {record.user.username}.")
+    return redirect("authorize_users")

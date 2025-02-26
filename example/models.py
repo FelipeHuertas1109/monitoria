@@ -3,6 +3,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+# app/models.py
+
+from django.db import models
+from django.contrib.auth.models import User
+
 class BaseDayPreference(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     morning = models.BooleanField(default=False)         # Si tiene chamba en la mañana
@@ -12,12 +17,17 @@ class BaseDayPreference(models.Model):
     afternoon_marked = models.BooleanField(default=False)  # Indica si ya se presionó el botón en la tarde
     morning_authorized = models.BooleanField(default=False)    # Indica si el superusuario autorizó la mañana
     afternoon_authorized = models.BooleanField(default=False)  # Indica si el superusuario autorizó la tarde
+    
+    # NUEVO: Campos para definir la cantidad de horas que se suman al marcar.
+    morning_hours = models.FloatField(default=4)
+    afternoon_hours = models.FloatField(default=4)
 
     class Meta:
         abstract = True
 
     def __str__(self):
         return f"Preferencias de {self.user.username} - {self.day_name}"
+
 
 class Monday(BaseDayPreference):
     day_name = "Lunes"
