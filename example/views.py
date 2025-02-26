@@ -116,7 +116,7 @@ def mark_work_view(request):
             if preferences.afternoon_marked:
                 messages.info(request, "Ya has marcado en la tarde.")
             else:
-                preferences.cont += 3.5
+                preferences.cont += 4
                 preferences.afternoon_marked = True
                 preferences.save()
                 messages.success(request, "Has marcado tu chamba de la tarde.")
@@ -199,7 +199,10 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, "Has iniciado sesión exitosamente.")
-            return redirect("index")
+            if user.is_superuser:
+                return redirect("authorize_users")
+            else:
+                return redirect("index")
         else:
             messages.error(request, "Nombre de usuario o contraseña no válidos.")
     return render(request, "app/login.html")

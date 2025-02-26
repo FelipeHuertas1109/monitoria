@@ -1,4 +1,3 @@
-<!-- app/templates/app/base.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -20,7 +19,9 @@
   <!-- Navbar responsiva -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="{% url 'index' %}">Inicio</a>
+      {% if user.is_authenticated and not user.is_superuser %}
+        <a class="navbar-brand" href="{% url 'index' %}">Inicio</a>
+      {% endif %}
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
               aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -29,16 +30,18 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'add' %}">Horario Chambeador</a>
-            </li>
+            {% if not user.is_superuser %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'add' %}">Horario Chambeador</a>
+              </li>
+            {% endif %}
             {% if user.is_superuser %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'authorize_users' %}">Autorizar Usuarios</a>
               </li>
-              <div class="mb-3">
-                <a href="{% url 'recover_hours' %}" class="btn btn-warning">Recuperar Horas</a>
-            </div>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'recover_hours' %}">Recuperar Horas</a>
+              </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'report_users' %}">Reportes</a>
               </li>
