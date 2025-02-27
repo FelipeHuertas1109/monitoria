@@ -436,7 +436,8 @@ def recover_hours_view(request):
 def update_hours_view(request, pref_id, period):
     if not request.user.is_superuser:
         messages.error(request, "No tienes permiso para acceder a esta acción.")
-        return redirect("index")
+        return redirect("authorize_users")
+    
     if request.method == "POST":
         new_hours = request.POST.get("hours")
         try:
@@ -445,7 +446,7 @@ def update_hours_view(request, pref_id, period):
             messages.error(request, "Valor de horas no válido.")
             return redirect("authorize_users")
         
-        # Se determina el registro correspondiente al día actual.
+        # Determinar el registro correspondiente al día actual
         zona_bogota = pytz.timezone("America/Bogota")
         fecha_actual = datetime.now(zona_bogota)
         dias_atributo = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
@@ -475,6 +476,19 @@ def update_hours_view(request, pref_id, period):
             messages.error(request, "Período no válido.")
             return redirect("authorize_users")
         
+        # Recalcular el total acumulado en 'cont'
+        new_cont = 0
+        if record.morning_marked:
+            new_cont += record.morning_hours
+        if record.afternoon_marked:
+            new_cont += record.afternoon_hours
+        record.cont = new_cont
+        
         record.save()
-        messages.success(request, f"Se actualizó las horas de { 'Mañana' if period=='morning' else 'Tarde' } a {new_hours} para {record.user.username}.")
+        messages.success(
+            request,
+            f"Se actualizó las horas de { 'Mañana' if period=='morning' else 'Tarde' } a {new_hours} para {record.user.username}. " +
+            "El total acumulado se ha recalculado."
+        )
     return redirect("authorize_users")
+
