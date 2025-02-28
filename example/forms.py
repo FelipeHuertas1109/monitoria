@@ -62,10 +62,11 @@ class BaseDayPreferenceForm(forms.ModelForm):
     Formulario base para las preferencias diarias (campos comunes: morning, afternoon y cont).
     """
     class Meta:
-        fields = ['morning', 'afternoon']
+        fields = ['morning', 'afternoon', 'sede']
         labels = {
             'morning': 'Mañana',
-            'afternoon': 'Tarde'
+            'afternoon': 'Tarde',
+            'sede': 'Sede'
         }
 
 class MondayForm(BaseDayPreferenceForm):

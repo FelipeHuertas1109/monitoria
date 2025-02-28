@@ -2,11 +2,8 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-
-# app/models.py
-
-from django.db import models
-from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class BaseDayPreference(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -18,15 +15,23 @@ class BaseDayPreference(models.Model):
     morning_authorized = models.BooleanField(default=False)    # Indica si el superusuario autorizó la mañana
     afternoon_authorized = models.BooleanField(default=False)  # Indica si el superusuario autorizó la tarde
     
-    # NUEVO: Campos para definir la cantidad de horas que se suman al marcar.
+    # Campos configurables para horas (ya existentes en tu implementación)
     morning_hours = models.FloatField(default=4)
     afternoon_hours = models.FloatField(default=4)
+    
+    # NUEVO: Campo para la sede
+    sede = models.CharField(
+        max_length=50,
+        choices=[("Barcelona", "Barcelona"), ("San Antonio", "San Antonio")],
+        default="Barcelona"
+    )
 
     class Meta:
         abstract = True
 
     def __str__(self):
         return f"Preferencias de {self.user.username} - {self.day_name}"
+
 
 
 class Monday(BaseDayPreference):
@@ -49,3 +54,4 @@ class Saturday(BaseDayPreference):
 
 class Sunday(BaseDayPreference):
     day_name = "Domingo"
+

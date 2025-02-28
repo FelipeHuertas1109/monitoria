@@ -1,5 +1,3 @@
-# app/admin.py
-
 from django.contrib import admin
 from .models import Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
 
