@@ -7,7 +7,14 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from datetime import datetime
 import pytz
-from .models import Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+from .models import Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, Sede
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from datetime import datetime
+import pytz
+from .models import Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, Sede
 from .forms import (
     UserRegisterForm, MondayForm, TuesdayForm, WednesdayForm,
     ThursdayForm, FridayForm, SaturdayForm, SundayForm
@@ -212,15 +219,11 @@ def logout_view(request):
 
 @login_required
 def authorize_users_view(request):
-    """
-    Vista para el superusuario:
-    Muestra una lista de todos los usuarios (preferencias del día actual) que tienen chamba
-    y permite autorizar cada período (mañana y/o tarde) si aún no han sido autorizados.
-    """
     if not request.user.is_superuser:
         messages.error(request, "No tienes permiso para acceder a esta página.")
         return redirect("index")
     
+    # Determinar el día actual en la zona de Bogotá
     zona_bogota = pytz.timezone("America/Bogota")
     fecha_actual = datetime.now(zona_bogota)
     
@@ -241,9 +244,25 @@ def authorize_users_view(request):
     }
     ModelClass = models_mapping[day_attr]
     
-    # Selecciona las preferencias de usuarios que tienen chamba (mañana o tarde)
+    # Obtener el registro Sede del superusuario y construir la lista de sedes permitidas
+    try:
+        sede_super = Sede.objects.get(user=request.user)
+    except Sede.DoesNotExist:
+        messages.error(request, "No se encontró la configuración de sedes para el superusuario.")
+        return redirect("index")
+    
+    allowed_sedes = []
+    if sede_super.barcelona:
+        allowed_sedes.append("Barcelona")
+    if sede_super.san_antonio:
+        allowed_sedes.append("San Antonio")
+    
+    # Filtrar las preferencias:
+    # - Si el usuario tiene chamba en la mañana, su campo sede_morning debe estar en allowed_sedes.
+    # - Si tiene chamba en la tarde, su campo sede_afternoon debe estar en allowed_sedes.
     preferences_list = ModelClass.objects.filter(
-        Q(morning=True) | Q(afternoon=True)
+        (Q(morning=True) & Q(sede_morning__in=allowed_sedes)) |
+        (Q(afternoon=True) & Q(sede_afternoon__in=allowed_sedes))
     ).order_by('user__username')
     
     return render(request, "app/authorize_users.html", {

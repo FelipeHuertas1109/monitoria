@@ -59,14 +59,15 @@ class UserRegisterForm(UserCreationForm):
 
 class BaseDayPreferenceForm(forms.ModelForm):
     """
-    Formulario base para las preferencias diarias (campos comunes: morning, afternoon y cont).
+    Formulario base para las preferencias diarias (campos comunes: morning, afternoon, sede_morning y sede_afternoon).
     """
     class Meta:
-        fields = ['morning', 'afternoon', 'sede']
+        fields = ['morning', 'afternoon', 'sede_morning', 'sede_afternoon']
         labels = {
             'morning': 'Mañana',
             'afternoon': 'Tarde',
-            'sede': 'Sede'
+            'sede_morning': 'Sede Mañana',
+            'sede_afternoon': 'Sede Tarde'
         }
 
 class MondayForm(BaseDayPreferenceForm):

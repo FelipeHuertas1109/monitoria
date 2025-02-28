@@ -5,22 +5,35 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
+class Sede(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    barcelona = models.BooleanField(default=False)
+    san_antonio = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Sede de {self.user.username}"
+
 class BaseDayPreference(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     morning = models.BooleanField(default=False)         # Si tiene chamba en la mañana
     afternoon = models.BooleanField(default=False)         # Si tiene chamba en la tarde
-    cont = models.FloatField(default=0)                    # Contador acumulado (Float para permitir decimales)
-    morning_marked = models.BooleanField(default=False)    # Indica si ya se presionó el botón en la mañana
-    afternoon_marked = models.BooleanField(default=False)  # Indica si ya se presionó el botón en la tarde
-    morning_authorized = models.BooleanField(default=False)    # Indica si el superusuario autorizó la mañana
-    afternoon_authorized = models.BooleanField(default=False)  # Indica si el superusuario autorizó la tarde
+    cont = models.FloatField(default=0)
+    morning_marked = models.BooleanField(default=False)
+    afternoon_marked = models.BooleanField(default=False)
+    morning_authorized = models.BooleanField(default=False)
+    afternoon_authorized = models.BooleanField(default=False)
     
-    # Campos configurables para horas (ya existentes en tu implementación)
     morning_hours = models.FloatField(default=4)
     afternoon_hours = models.FloatField(default=4)
     
-    # NUEVO: Campo para la sede
-    sede = models.CharField(
+    # Campos de sede separados para cada período
+    sede_morning = models.CharField(
+        max_length=50,
+        choices=[("Barcelona", "Barcelona"), ("San Antonio", "San Antonio")],
+        default="Barcelona"
+    )
+    sede_afternoon = models.CharField(
         max_length=50,
         choices=[("Barcelona", "Barcelona"), ("San Antonio", "San Antonio")],
         default="Barcelona"
@@ -31,7 +44,6 @@ class BaseDayPreference(models.Model):
 
     def __str__(self):
         return f"Preferencias de {self.user.username} - {self.day_name}"
-
 
 
 class Monday(BaseDayPreference):
