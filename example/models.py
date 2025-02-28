@@ -38,13 +38,15 @@ class BaseDayPreference(models.Model):
         choices=[("Barcelona", "Barcelona"), ("San Antonio", "San Antonio")],
         default="Barcelona"
     )
+    
+    # Nuevo campo para almacenar la fecha de la última marca
+    last_mark_date = models.DateField(null=True, blank=True)
 
     class Meta:
         abstract = True
 
     def __str__(self):
         return f"Preferencias de {self.user.username} - {self.day_name}"
-
 
 class Monday(BaseDayPreference):
     day_name = "Lunes"

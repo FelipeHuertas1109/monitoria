@@ -21,17 +21,6 @@ from .forms import (
 )
 
 def index_view(request):
-    """
-    Vista principal:
-    - Obtiene la hora actual en Bogotá.
-    - Determina el día de la semana y el período (mañana o tarde).
-    - Obtiene (o crea) las preferencias para el día actual.
-    - Muestra un mensaje según la configuración del usuario.
-    - Muestra el botón "Marcar" solo si:
-        * El usuario tiene chamba en el período.
-        * El superusuario lo ha autorizado.
-        * No ha marcado aún en ese período.
-    """
     if not request.user.is_authenticated:
         return redirect("login")
     
@@ -56,12 +45,15 @@ def index_view(request):
     ModelClass = models_mapping[day_attr]
     preferences, created = ModelClass.objects.get_or_create(user=request.user)
     
+    # Lógica para reiniciar los campos de marcado si es un nuevo día
+    if preferences.last_mark_date != fecha_actual.date():
+        preferences.morning_marked = False
+        preferences.afternoon_marked = False
+        preferences.last_mark_date = fecha_actual.date()
+        preferences.save()
+    
     time_period = "morning" if fecha_actual.hour < 12 else "afternoon"
     
-    # Ahora se muestra el botón solo si:
-    # 1. El usuario tiene chamba en ese período.
-    # 2. El superusuario lo autorizó (morning_authorized / afternoon_authorized).
-    # 3. Aún no ha marcado (morning_marked / afternoon_marked).
     if time_period == "morning":
         mostrar_boton = preferences.morning and preferences.morning_authorized and not preferences.morning_marked
     else:
