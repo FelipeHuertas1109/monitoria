@@ -259,9 +259,18 @@ def authorize_users_view(request):
         (Q(morning=True) & Q(sede_morning__in=allowed_sedes)) |
         (Q(afternoon=True) & Q(sede_afternoon__in=allowed_sedes))
     ).order_by('user__username')
+    nombre_sede = ""
+
+    if sede_super.barcelona:
+       nombre_sede = "Barcelona"
+    elif sede_super.san_antonio:
+       nombre_sede = "San Antonio"
+    else:
+       nombre_sede = "Barcelona y San Antonio"
     
     return render(request, "app/authorize_users.html", {
         "nombre_dia": nombre_dia,
+        "nombre_sede": nombre_sede,
         "preferences_list": preferences_list,
     })
 
@@ -506,3 +515,42 @@ def update_hours_view(request, pref_id, period):
         )
     return redirect("authorize_users")
 
+@login_required
+def work_students_view(request):
+    """
+    Vista que muestra a los estudiantes de ambos turnos (mañana y tarde)
+    que tienen chamba el día actual.
+    """
+    zona_bogota = pytz.timezone("America/Bogota")
+    fecha_actual = datetime.now(zona_bogota)
+    
+    # Determinar el día de la semana
+    dias_atributo = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    dias_display   = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+    dia_index = fecha_actual.weekday()
+    day_attr = dias_atributo[dia_index]
+    nombre_dia = dias_display[dia_index]
+    
+    # Mapeo para obtener el modelo correspondiente al día actual
+    models_mapping = {
+        "monday": Monday,
+        "tuesday": Tuesday,
+        "wednesday": Wednesday,
+        "thursday": Thursday,
+        "friday": Friday,
+        "saturday": Saturday,
+        "sunday": Sunday,
+    }
+    ModelClass = models_mapping[day_attr]
+    
+    # Se seleccionan los estudiantes que tienen chamba en la mañana o en la tarde
+    work_students = ModelClass.objects.filter(
+        Q(morning=True) | Q(afternoon=True)
+    ).order_by('user__username')
+    
+    context = {
+        "nombre_dia": nombre_dia,
+        "work_students": work_students,
+    }
+    
+    return render(request, "app/work_students.html", context)

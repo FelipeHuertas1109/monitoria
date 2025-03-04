@@ -1,0 +1,33 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Estudiantes con chamba para {{ nombre_dia }}</h2>
+    {% if work_students %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Chamba Mañana</th>
+                <th>Chamba Tarde</th>
+                <th>Sede Mañana</th>
+                <th>Sede Tarde</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pref in work_students %}
+            <tr>
+                <td>{{ pref.user.username }}</td>
+                <td>{{ pref.morning|yesno:"Sí,No" }}</td>
+                <td>{{ pref.afternoon|yesno:"Sí,No" }}</td>
+                <td>{{ pref.sede_morning }}</td>
+                <td>{{ pref.sede_afternoon }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No se encontraron estudiantes con chamba para este día.</p>
+    {% endif %}
+</div>
+{% endblock %}

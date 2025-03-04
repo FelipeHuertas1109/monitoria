@@ -6,7 +6,7 @@ from .views import (
     register_view, login_view, logout_view,
     authorize_users_view, authorize_mark_view,
     report_users_view, user_report_view,
-      recover_hours_view, update_hours_view
+      recover_hours_view, update_hours_view, work_students_view
 )
 
 urlpatterns = [
@@ -25,4 +25,5 @@ urlpatterns = [
     path('recover_hours/', recover_hours_view, name='recover_hours'),
     # Nueva ruta para actualizar las horas
     path('update-hours/<int:pref_id>/<str:period>/', update_hours_view, name='update_hours'),
+    path('work-students/', work_students_view, name='work_students'),
 ]
