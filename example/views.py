@@ -45,10 +45,12 @@ def index_view(request):
     ModelClass = models_mapping[day_attr]
     preferences, created = ModelClass.objects.get_or_create(user=request.user)
     
-    # Lógica para reiniciar los campos de marcado si es un nuevo día
+    # Si last_mark_date es None o es un día distinto, reiniciamos los flags de marcado y autorización
     if preferences.last_mark_date != fecha_actual.date():
         preferences.morning_marked = False
         preferences.afternoon_marked = False
+        preferences.morning_authorized = False
+        preferences.afternoon_authorized = False
         preferences.last_mark_date = fecha_actual.date()
         preferences.save()
     
@@ -73,6 +75,7 @@ def index_view(request):
         "mensaje": mensaje,
         "mostrar_boton": mostrar_boton,
     })
+
 
 @login_required
 
