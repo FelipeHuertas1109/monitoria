@@ -2,89 +2,184 @@
 {% extends "app/base.html" %}
 
 {% block content %}
-<div class="container">
-    <h2>Autorización para el dia {{ nombre_dia }} en {{ nombre_sede }}</h2>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Usuario</th>
-                <th>Chamba Mañana</th>
-                <th>Autorizado Mañana</th>
-                <th>Acción Mañana</th>
-                <th>Horas Mañana</th>
-                <th>Chamba Tarde</th>
-                <th>Autorizado Tarde</th>
-                <th>Acción Tarde</th>
-                <th>Horas Tarde</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pref in preferences_list %}
-            <tr>
-                <td>{{ pref.user.username }}</td>
-                <td>{{ pref.morning|yesno:"Sí,No" }}</td>
-                <td>{{ pref.morning_authorized|yesno:"Sí,No" }}</td>
-                <td>
-                    {% if pref.morning %}
-                        {% if pref.morning_authorized %}
-                        <!-- Botón para desautorizar -->
-                        <form action="{% url 'authorize_mark' pref.id 'morning' 'deauthorize' %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm">Desautorizar Mañana</button>
-                        </form>
-                        {% else %}
-                        <!-- Botón para autorizar -->
-                        <form action="{% url 'authorize_mark' pref.id 'morning' 'authorize' %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success btn-sm">Autorizar Mañana</button>
-                        </form>
-                        {% endif %}
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-                <td>
-                    <form action="{% url 'update_hours' pref.id 'morning' %}" method="post">
+<div class="max-w-4xl mx-auto px-4 py-6">
+  <h2 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">
+    Autorización para el día {{ nombre_dia }} en {{ nombre_sede }}
+  </h2>
+  
+  {% if preferences_list %}
+    <div id="accordion" class="space-y-4">
+      {% for pref in preferences_list %}
+        <!-- Tarjeta principal con acordeón -->
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+          <!-- Encabezado del acordeón (nombre de usuario) -->
+          <button
+            type="button"
+            class="w-full px-4 py-3 flex justify-between items-center text-left text-lg font-medium text-gray-800 dark:text-gray-100 focus:outline-none accordion-header"
+            data-target="user-{{ pref.id }}"
+          >
+            <span>{{ pref.user.username }}</span>
+            <svg
+              class="h-5 w-5 transform transition-transform duration-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <!-- Contenido expandible -->
+          <div
+            id="user-{{ pref.id }}"
+            class="accordion-content hidden px-6 py-6 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600"
+          >
+            <!-- Sección MAÑANA -->
+            <div class="mb-6">
+              <h4 class="text-md font-semibold text-gray-800 dark:text-gray-100 mb-1">Mañana</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                Trabajo: {{ pref.morning|yesno:"Sí,No" }} – Autorizado: {{ pref.morning_authorized|yesno:"Sí,No" }}
+              </p>
+              {% if pref.morning %}
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                  <!-- Botón Autorizar / Desautorizar -->
+                  <div>
+                    {% if pref.morning_authorized %}
+                      <form action="{% url 'authorize_mark' pref.id 'morning' 'deauthorize' %}" method="post" class="inline">
                         {% csrf_token %}
-                        <input type="number" step="0.1" name="hours" value="{{ pref.morning_hours|default:"4" }}" style="width:60px;">
-                        <button type="submit" class="btn btn-secondary btn-sm">Actualizar</button>
-                    </form>
-                </td>
-                <td>{{ pref.afternoon|yesno:"Sí,No" }}</td>
-                <td>{{ pref.afternoon_authorized|yesno:"Sí,No" }}</td>
-                <td>
-                    {% if pref.afternoon %}
-                        {% if pref.afternoon_authorized %}
-                        <!-- Botón para desautorizar -->
-                        <form action="{% url 'authorize_mark' pref.id 'afternoon' 'deauthorize' %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm">Desautorizar Tarde</button>
-                        </form>
-                        {% else %}
-                        <!-- Botón para autorizar -->
-                        <form action="{% url 'authorize_mark' pref.id 'afternoon' 'authorize' %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success btn-sm">Autorizar Tarde</button>
-                        </form>
-                        {% endif %}
+                        <button
+                          type="submit"
+                          class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded text-sm"
+                        >
+                          Desautorizar
+                        </button>
+                      </form>
                     {% else %}
-                        -
-                    {% endif %}
-                </td>
-                <td>
-                    <form action="{% url 'update_hours' pref.id 'afternoon' %}" method="post">
+                      <form action="{% url 'authorize_mark' pref.id 'morning' 'authorize' %}" method="post" class="inline">
                         {% csrf_token %}
-                        <input type="number" step="0.1" name="hours" value="{{ pref.afternoon_hours|default:"4" }}" style="width:60px;">
-                        <button type="submit" class="btn btn-secondary btn-sm">Actualizar</button>
+                        <button
+                          type="submit"
+                          class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded text-sm"
+                        >
+                          Autorizar
+                        </button>
+                      </form>
+                    {% endif %}
+                  </div>
+                  <!-- Formulario de horas -->
+                  <div>
+                    <form
+                      action="{% url 'update_hours' pref.id 'morning' %}"
+                      method="post"
+                      class="flex items-center space-x-2"
+                    >
+                      {% csrf_token %}
+                      <input
+                        type="number"
+                        step="0.1"
+                        name="hours"
+                        value="{{ pref.morning_hours|default:"4" }}"
+                        class="w-20 border rounded px-2 py-1 text-sm"
+                      />
+                      <button
+                        type="submit"
+                        class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-1 rounded text-sm"
+                      >
+                        Actualizar
+                      </button>
                     </form>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="9">No hay usuarios con chamba para {{ nombre_dia }}.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                  </div>
+                </div>
+              {% else %}
+                <span class="text-gray-500 text-sm">No aplica</span>
+              {% endif %}
+            </div>
+            <!-- Sección TARDE -->
+            <div>
+              <h4 class="text-md font-semibold text-gray-800 dark:text-gray-100 mb-1">Tarde</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                Trabajo: {{ pref.afternoon|yesno:"Sí,No" }} – Autorizado: {{ pref.afternoon_authorized|yesno:"Sí,No" }}
+              </p>
+              {% if pref.afternoon %}
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                  <!-- Botón Autorizar / Desautorizar -->
+                  <div>
+                    {% if pref.afternoon_authorized %}
+                      <form action="{% url 'authorize_mark' pref.id 'afternoon' 'deauthorize' %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <button
+                          type="submit"
+                          class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded text-sm"
+                        >
+                          Desautorizar
+                        </button>
+                      </form>
+                    {% else %}
+                      <form action="{% url 'authorize_mark' pref.id 'afternoon' 'authorize' %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <button
+                          type="submit"
+                          class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded text-sm"
+                        >
+                          Autorizar
+                        </button>
+                      </form>
+                    {% endif %}
+                  </div>
+                  <!-- Formulario de horas -->
+                  <div>
+                    <form
+                      action="{% url 'update_hours' pref.id 'afternoon' %}"
+                      method="post"
+                      class="flex items-center space-x-2"
+                    >
+                      {% csrf_token %}
+                      <input
+                        type="number"
+                        step="0.1"
+                        name="hours"
+                        value="{{ pref.afternoon_hours|default:"4" }}"
+                        class="w-20 border rounded px-2 py-1 text-sm"
+                      />
+                      <button
+                        type="submit"
+                        class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-1 rounded text-sm"
+                      >
+                        Actualizar
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              {% else %}
+                <span class="text-gray-500 text-sm">No aplica</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
+      <p class="text-center text-gray-700 dark:text-gray-300">
+        No hay usuarios con trabajo para {{ nombre_dia }}.
+      </p>
+    </div>
+  {% endif %}
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  // Funcionalidad del acordeón para cada usuario
+  document.querySelectorAll('.accordion-header').forEach(button => {
+    button.addEventListener('click', () => {
+      const targetId = button.dataset.target;
+      const content = document.getElementById(targetId);
+      content.classList.toggle('hidden');
+
+      // Rota la flecha del encabezado
+      const icon = button.querySelector('svg');
+      icon.classList.toggle('rotate-180');
+    });
+  });
+});
+</script>
 {% endblock %}

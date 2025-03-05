@@ -2,29 +2,47 @@
 {% extends "app/base.html" %}
 
 {% block content %}
-<div class="container">
-    <h2>Reportes de Usuarios</h2>
-    <table class="table table-bordered">
+<div class="max-w-5xl mx-auto px-4 py-6">
+  <h2 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">
+    Reportes de Usuarios
+  </h2>
+
+  {% if users %}
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
         <thead>
-            <tr>
-                <th>Usuario</th>
-                <th>Acción</th>
-            </tr>
+          <tr class="bg-gray-100 dark:bg-gray-700">
+            <th class="px-4 py-2 border-b dark:border-gray-600 text-left text-center">Usuario</th>
+            <th class="px-4 py-2 border-b dark:border-gray-600 text-left text-center">Acción</th>
+          </tr>
         </thead>
         <tbody>
-            {% for user in users %}
-            <tr>
-                <td>{{ user.username }}</td>
-                <td>
-                    <a href="{% url 'user_report' user.id %}" class="btn btn-info btn-sm">Reporte</a>
-                </td>
+          {% for user in users %}
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+              <!-- Usuario -->
+              <td class="px-4 py-2 border-b dark:border-gray-600 text-gray-800 dark:text-gray-100 text-center">
+                {{ user.username }}
+              </td>
+              <!-- Acción (Reporte) -->
+              <td class="px-4 py-2 border-b dark:border-gray-600 justify-center flex">
+                <a
+                  href="{% url 'user_report' user.id %}"
+                  class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+                >
+                  Ver Reporte
+                </a>
+              </td>
             </tr>
-            {% empty %}
-            <tr>
-                <td colspan="2">No se encontraron usuarios.</td>
-            </tr>
-            {% endfor %}
+          {% endfor %}
         </tbody>
-    </table>
+      </table>
+    </div>
+  {% else %}
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
+      <p class="text-center text-gray-700 dark:text-gray-300">
+        No se encontraron usuarios.
+      </p>
+    </div>
+  {% endif %}
 </div>
 {% endblock %}

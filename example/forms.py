@@ -9,16 +9,38 @@ from django.contrib.auth.forms import UserCreationForm
 
 class RecoverHoursForm(forms.Form):
     user = forms.ModelChoiceField(
-        queryset=User.objects.all(),
-        label="Usuario"
+        queryset=User.objects.all().order_by('username'),
+        label="Usuario",
+        empty_label="Seleccione un usuario...",
+        widget=forms.Select(attrs={
+            'class': (
+                'w-full border border-gray-300 rounded px-3 py-2 '
+                'focus:outline-none focus:ring-2 focus:ring-blue-500 '
+                'dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100'
+            )
+        })
     )
     period = forms.ChoiceField(
         choices=[('morning', 'Mañana'), ('afternoon', 'Tarde')],
-        label="Período"
+        label="Período",
+        widget=forms.Select(attrs={
+            'class': (
+                'w-full border border-gray-300 rounded px-3 py-2 '
+                'focus:outline-none focus:ring-2 focus:ring-blue-500 '
+                'dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100'
+            )
+        })
     )
     hours = forms.FloatField(
         label="Horas a recuperar",
-        min_value=0
+        min_value=0,
+        widget=forms.NumberInput(attrs={
+            'class': (
+                'w-full border border-gray-300 rounded px-3 py-2 '
+                'focus:outline-none focus:ring-2 focus:ring-blue-500 '
+                'dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100'
+            )
+        })
     )
 
 class UserRegisterForm(UserCreationForm):

@@ -1,33 +1,74 @@
+<!-- app/templates/app/work_students.html -->
 {% extends "app/base.html" %}
 
 {% block content %}
-<div class="container">
-    <h2>Estudiantes con chamba para {{ nombre_dia }}</h2>
-    {% if work_students %}
-    <table class="table table-bordered">
+<div class="max-w-5xl mx-auto px-4 py-6">
+  <h2 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">
+    Estudiantes con trabajo para {{ nombre_dia }}
+  </h2>
+
+  {% if work_students %}
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
         <thead>
-            <tr>
-                <th>Usuario</th>
-                <th>Chamba Mañana</th>
-                <th>Chamba Tarde</th>
-                <th>Sede Mañana</th>
-                <th>Sede Tarde</th>
-            </tr>
+          <tr class="bg-gray-100 dark:bg-gray-700">
+            <th class="px-4 py-2 border-b dark:border-gray-600 text-left">Usuario</th>
+            <th class="px-4 py-2 border-b dark:border-gray-600 text-center">Trabajo Mañana</th>
+            <th class="px-4 py-2 border-b dark:border-gray-600 text-center">Trabajo Tarde</th>
+            <th class="px-4 py-2 border-b dark:border-gray-600 text-center">Sede Mañana</th>
+            <th class="px-4 py-2 border-b dark:border-gray-600 text-center">Sede Tarde</th>
+          </tr>
         </thead>
         <tbody>
-            {% for pref in work_students %}
-            <tr>
-                <td>{{ pref.user.username }}</td>
-                <td>{{ pref.morning|yesno:"Sí,No" }}</td>
-                <td>{{ pref.afternoon|yesno:"Sí,No" }}</td>
-                <td>{{ pref.sede_morning }}</td>
-                <td>{{ pref.sede_afternoon }}</td>
+          {% for pref in work_students %}
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+              <!-- Usuario -->
+              <td class="px-4 py-2 border-b dark:border-gray-600 text-gray-800 dark:text-gray-100">
+                {{ pref.user.username }}
+              </td>
+              <!-- Trabajo Mañana (con badge) -->
+              <td class="px-4 py-2 border-b dark:border-gray-600 text-center">
+                {% if pref.morning %}
+                  <span class="inline-block px-2 py-1 bg-green-100 text-green-800 rounded text-sm">
+                    Sí
+                  </span>
+                {% else %}
+                  <span class="inline-block px-2 py-1 bg-red-100 text-red-800 rounded text-sm">
+                    No
+                  </span>
+                {% endif %}
+              </td>
+              <!-- Trabajo Tarde (con badge) -->
+              <td class="px-4 py-2 border-b dark:border-gray-600 text-center">
+                {% if pref.afternoon %}
+                  <span class="inline-block px-2 py-1 bg-green-100 text-green-800 rounded text-sm">
+                    Sí
+                  </span>
+                {% else %}
+                  <span class="inline-block px-2 py-1 bg-red-100 text-red-800 rounded text-sm">
+                    No
+                  </span>
+                {% endif %}
+              </td>
+              <!-- Sede Mañana -->
+              <td class="px-4 py-2 border-b dark:border-gray-600 text-center text-gray-700 dark:text-gray-300">
+                {{ pref.sede_morning }}
+              </td>
+              <!-- Sede Tarde -->
+              <td class="px-4 py-2 border-b dark:border-gray-600 text-center text-gray-700 dark:text-gray-300">
+                {{ pref.sede_afternoon }}
+              </td>
             </tr>
-            {% endfor %}
+          {% endfor %}
         </tbody>
-    </table>
-    {% else %}
-    <p>No se encontraron estudiantes con chamba para este día.</p>
-    {% endif %}
+      </table>
+    </div>
+  {% else %}
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
+      <p class="text-center text-gray-700 dark:text-gray-300">
+        No se encontraron estudiantes con trabajo para este día.
+      </p>
+    </div>
+  {% endif %}
 </div>
 {% endblock %}

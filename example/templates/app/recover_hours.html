@@ -2,12 +2,49 @@
 {% extends "app/base.html" %}
 
 {% block content %}
-<div class="container">
-    <h2>Recuperar Horas</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Recuperar Horas</button>
-    </form>
+<div class="max-w-md mx-auto px-4 py-6 bg-white dark:bg-gray-800 shadow rounded-lg">
+  <h2 class="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">Recuperar Horas</h2>
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    <!-- Campo: Usuario -->
+    <div>
+      <label for="{{ form.user.id_for_label }}" class="block text-gray-700 dark:text-gray-300 mb-1">
+        {{ form.user.label }}:
+      </label>
+      {{ form.user }}
+      {% if form.user.errors %}
+        <p class="text-red-500 text-sm mt-1">{{ form.user.errors }}</p>
+      {% endif %}
+    </div>
+    <!-- Campo: Período -->
+    <div>
+      <label for="{{ form.period.id_for_label }}" class="block text-gray-700 dark:text-gray-300 mb-1">
+        {{ form.period.label }}:
+      </label>
+      {{ form.period }}
+      {% if form.period.errors %}
+        <p class="text-red-500 text-sm mt-1">{{ form.period.errors }}</p>
+      {% endif %}
+    </div>
+    <!-- Campo: Horas a recuperar -->
+    <div>
+      <label for="{{ form.hours.id_for_label }}" class="block text-gray-700 dark:text-gray-300 mb-1">
+        {{ form.hours.label }}:
+      </label>
+      {{ form.hours }}
+      {% if form.hours.errors %}
+        <p class="text-red-500 text-sm mt-1">{{ form.hours.errors }}</p>
+      {% endif %}
+    </div>
+    <!-- Botón de envío -->
+    <div class="pt-2">
+      <button
+        type="submit"
+        class="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none"
+      >
+        Recuperar Horas
+      </button>
+    </div>
+  </form>
 </div>
 {% endblock %}
