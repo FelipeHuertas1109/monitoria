@@ -128,7 +128,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # Configuración para enviar correos usando Gmail
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'custom_email_backend.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
