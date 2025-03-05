@@ -1,6 +1,7 @@
 # app/urls.py
 
 from django.urls import path
+from django.contrib.auth import views as auth_views
 from .views import (
     index_view, mark_work_view, add_preferences_view,
     register_view, login_view, logout_view,
@@ -26,4 +27,17 @@ urlpatterns = [
     # Nueva ruta para actualizar las horas
     path('update-hours/<int:pref_id>/<str:period>/', update_hours_view, name='update_hours'),
     path('work-students/', work_students_view, name='work_students'),
+    # Rutas para resetear la contraseña
+    path('reset_password/', 
+         auth_views.PasswordResetView.as_view(template_name="app/password_reset.html"), 
+         name="reset_password"),
+    path('reset_password_sent/', 
+         auth_views.PasswordResetDoneView.as_view(template_name="app/password_reset_sent.html"), 
+         name="password_reset_done"),
+    path('reset/<uidb64>/<token>/', 
+         auth_views.PasswordResetConfirmView.as_view(template_name="app/password_reset_form.html"), 
+         name="password_reset_confirm"),
+    path('reset_password_complete/', 
+         auth_views.PasswordResetCompleteView.as_view(template_name="app/password_reset_complete.html"), 
+         name="password_reset_complete"),
 ]

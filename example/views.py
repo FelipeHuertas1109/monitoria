@@ -267,6 +267,8 @@ def authorize_users_view(request):
        nombre_sede = "San Antonio"
     else:
        nombre_sede = "Barcelona y San Antonio"
+
+    print(preferences_list)
     
     return render(request, "app/authorize_users.html", {
         "nombre_dia": nombre_dia,
