@@ -2,14 +2,18 @@
 {% extends 'app/base.html' %}
 
 {% block content %}
-<div class="container">
-  <h2 class="mb-3">Hoy es {{ dia }}</h2>
-  <p class="lead">La hora en Bogotá es: {{ hora }}</p>
-  <p>{{ mensaje }}</p>
+<div class="max-w-3xl mx-auto py-8 px-4">
+  <h2 class="text-3xl font-bold mb-4 text-gray-800 dark:text-gray-100">Hoy es {{ dia }}</h2>
+  <p class="text-lg text-gray-700 dark:text-gray-300 mb-2">
+    La hora en Bogotá es: <span class="font-medium">{{ hora }}</span>
+  </p>
+  <p class="mb-6 text-gray-600 dark:text-gray-400">{{ mensaje }}</p>
   {% if mostrar_boton %}
     <form action="{% url 'mark_work' %}" method="post">
       {% csrf_token %}
-      <button type="submit" class="btn btn-primary">Marcar</button>
+      <button type="submit" class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow">
+        Registrar Trabajo
+      </button>
     </form>
   {% endif %}
 </div>

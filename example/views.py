@@ -63,11 +63,11 @@ def index_view(request):
     
     if getattr(preferences, time_period, False):
         if time_period == "morning":
-            mensaje = f"Tienes chamba el {nombre_dia} en la mañana."
+            mensaje = f"Tienes horas el {nombre_dia} en la mañana."
         else:
-            mensaje = f"Tienes chamba el {nombre_dia} en la tarde."
+            mensaje = f"Tienes horas el {nombre_dia} en la tarde."
     else:
-        mensaje = "Hoy no chambeas."
+        mensaje = "Hoy no tienes horas."
     
     return render(request, "app/index.html", {
         "dia": nombre_dia,
@@ -110,7 +110,7 @@ def mark_work_view(request):
                 preferences.cont += preferences.morning_hours
                 preferences.morning_marked = True
                 preferences.save()
-                messages.success(request, "Has marcado tu chamba de la mañana.")
+                messages.success(request, "Has marcado tús horas de la mañana.")
         else:
             if preferences.afternoon_marked:
                 messages.info(request, "Ya has marcado en la tarde.")
@@ -119,7 +119,7 @@ def mark_work_view(request):
                 preferences.cont += preferences.afternoon_hours
                 preferences.afternoon_marked = True
                 preferences.save()
-                messages.success(request, "Has marcado tu chamba de la tarde.")
+                messages.success(request, "Has marcado tús horas de la tarde.")
         
         return redirect("index")
     return redirect("index")

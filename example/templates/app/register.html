@@ -2,12 +2,107 @@
 {% extends 'app/base.html' %}
 
 {% block content %}
-<div class="container">
-    <h2>Registrarse</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Crear Cuenta</button>
-    </form>
+<div class="max-w-md mx-auto mt-10 p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+  <h2 class="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">Registrarse</h2>
+  <form method="POST" class="space-y-4">
+    {% csrf_token %}
+    <!-- Campo: Nombre de usuario -->
+    <div>
+      <label for="id_username" class="block text-gray-700 dark:text-gray-300">Nombre de usuario:</label>
+      <input type="text" id="id_username" name="username" value="{{ form.username.value|default_if_none:'' }}" placeholder="Nombre de usuario" required
+             class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300">
+    </div>
+    <!-- Campo: Correo electrónico -->
+    <div>
+      <label for="id_email" class="block text-gray-700 dark:text-gray-300">Correo electrónico:</label>
+      <input type="email" id="id_email" name="email" value="{{ form.email.value|default_if_none:'' }}" placeholder="Correo electrónico" required
+             class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300">
+    </div>
+    <!-- Campo: Contraseña -->
+    <div>
+      <label for="id_password1" class="block text-gray-700 dark:text-gray-300">Contraseña:</label>
+      <div class="relative">
+        <input type="password" id="id_password1" name="password1" placeholder="Contraseña" required
+               class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300">
+        <button type="button" id="togglePassword1" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 focus:outline-none">
+          <!-- Icono para "ver" contraseña -->
+          <svg id="eyeIcon1" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10 3C5.454 3 1.582 6.133.333 10a9.958 9.958 0 0019.334 0C18.418 6.133 14.546 3 10 3zM10 15a5 5 0 110-10 5 5 0 010 10z"/>
+          </svg>
+          <!-- Icono para "ocultar" contraseña -->
+          <svg id="eyeOffIcon1" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M4.293 4.293a1 1 0 011.414 0l9.293 9.293a1 1 0 01-1.414 1.414l-9.293-9.293a1 1 0 010-1.414z" />
+            <path d="M10 3C5.454 3 1.582 6.133.333 10a9.958 9.958 0 0019.334 0C18.418 6.133 14.546 3 10 3zm0 12a5 5 0 110-10 5 5 0 010 10z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <!-- Campo: Confirmar Contraseña -->
+    <div>
+      <label for="id_password2" class="block text-gray-700 dark:text-gray-300">Confirmar Contraseña:</label>
+      <div class="relative">
+        <input type="password" id="id_password2" name="password2" placeholder="Confirmar Contraseña" required
+               class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300">
+        <button type="button" id="togglePassword2" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 focus:outline-none">
+          <!-- Icono para "ver" contraseña -->
+          <svg id="eyeIcon2" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10 3C5.454 3 1.582 6.133.333 10a9.958 9.958 0 0019.334 0C18.418 6.133 14.546 3 10 3zM10 15a5 5 0 110-10 5 5 0 010 10z"/>
+          </svg>
+          <!-- Icono para "ocultar" contraseña -->
+          <svg id="eyeOffIcon2" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M4.293 4.293a1 1 0 011.414 0l9.293 9.293a1 1 0 01-1.414 1.414l-9.293-9.293a1 1 0 010-1.414z" />
+            <path d="M10 3C5.454 3 1.582 6.133.333 10a9.958 9.958 0 0019.334 0C18.418 6.133 14.546 3 10 3zm0 12a5 5 0 110-10 5 5 0 010 10z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <!-- Botón de envío -->
+    <div>
+      <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none">Crear Cuenta</button>
+    </div>
+  </form>
 </div>
+
+<!-- Scripts para toggle de contraseñas -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Toggle para el primer campo de contraseña
+  const togglePassword1 = document.getElementById("togglePassword1");
+  const passwordField1 = document.getElementById("id_password1");
+  const eyeIcon1 = document.getElementById("eyeIcon1");
+  const eyeOffIcon1 = document.getElementById("eyeOffIcon1");
+
+  togglePassword1.addEventListener("click", function() {
+    const currentType = passwordField1.getAttribute("type");
+    if (currentType === "password") {
+      passwordField1.setAttribute("type", "text");
+      eyeIcon1.classList.add("hidden");
+      eyeOffIcon1.classList.remove("hidden");
+    } else {
+      passwordField1.setAttribute("type", "password");
+      eyeIcon1.classList.remove("hidden");
+      eyeOffIcon1.classList.add("hidden");
+    }
+  });
+
+  // Toggle para el segundo campo de contraseña
+  const togglePassword2 = document.getElementById("togglePassword2");
+  const passwordField2 = document.getElementById("id_password2");
+  const eyeIcon2 = document.getElementById("eyeIcon2");
+  const eyeOffIcon2 = document.getElementById("eyeOffIcon2");
+
+  togglePassword2.addEventListener("click", function() {
+    const currentType = passwordField2.getAttribute("type");
+    if (currentType === "password") {
+      passwordField2.setAttribute("type", "text");
+      eyeIcon2.classList.add("hidden");
+      eyeOffIcon2.classList.remove("hidden");
+    } else {
+      passwordField2.setAttribute("type", "password");
+      eyeIcon2.classList.remove("hidden");
+      eyeOffIcon2.classList.add("hidden");
+    }
+  });
+});
+</script>
 {% endblock %}

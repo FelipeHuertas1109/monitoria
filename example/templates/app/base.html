@@ -1,78 +1,162 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
   <meta charset="UTF-8">
   <title>Mi Aplicación</title>
-  <!-- Etiqueta viewport para responsividad -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap CSS (puedes actualizar a la versión que prefieras) -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <!-- Puedes agregar aquí estilos personalizados si lo deseas -->
+  <!-- Tailwind CSS CDN (versión 2.x) -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    /* Ejemplo de estilo personalizado para márgenes en móviles */
+    /* Compensar la barra de navegación fija */
     body {
-      padding-top: 70px;
+      padding-top: 4rem;
     }
   </style>
 </head>
-<body>
-  <!-- Navbar responsiva -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-    <div class="container">
-      {% if user.is_authenticated and not user.is_superuser %}
-        <a class="navbar-brand" href="{% url 'index' %}">Inicio</a>
-      {% endif %}
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-      </button>
-  
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          {% if user.is_authenticated %}
-            {% if not user.is_superuser %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'add' %}">Horario Chambeador</a>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100">
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full bg-white dark:bg-gray-800 shadow z-10">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo/Enlace de inicio -->
+        {% if user.is_authenticated and not user.is_superuser %}
+        <div class="flex-shrink-0">
+          <a href="{% url 'index' %}" class="text-xl font-semibold {% if request.resolver_match.url_name == 'index' %}text-blue-500{% else %}text-gray-900 dark:text-gray-100{% endif %}">
+            Inicio
+          </a>
+        </div>
+        {% endif %}
+        <!-- Botón menú móvil -->
+        <div class="md:hidden">
+          <button id="menu-toggle" class="text-gray-900 dark:text-gray-100 focus:outline-none">
+            <svg class="h-6 w-6 dark:text-gray-100" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <path d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+        <!-- Menú de navegación (desktop) -->
+        <div class="hidden md:block">
+          <ul class="flex space-x-4">
+            {% if user.is_authenticated %}
+              {% if not user.is_superuser %}
+                <li>
+                  <a href="{% url 'add' %}" class="px-3 py-2 rounded-md font-medium {% if request.resolver_match.url_name == 'add' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:text-blue-500{% endif %}">
+                    Horario
+                  </a>
+                </li>
+              {% endif %}
+              {% if user.is_superuser %}
+                <li>
+                  <a href="{% url 'authorize_users' %}" class="px-3 py-2 rounded-md font-medium {% if request.resolver_match.url_name == 'authorize_users' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:text-blue-500{% endif %}">
+                    Autorizar Usuarios
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'work_students' %}" class="px-3 py-2 rounded-md font-medium {% if request.resolver_match.url_name == 'work_students' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:text-blue-500{% endif %}">
+                    Usuarios Vista General
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'recover_hours' %}" class="px-3 py-2 rounded-md font-medium {% if request.resolver_match.url_name == 'recover_hours' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:text-blue-500{% endif %}">
+                    Recuperar Horas
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'report_users' %}" class="px-3 py-2 rounded-md font-medium {% if request.resolver_match.url_name == 'report_users' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:text-blue-500{% endif %}">
+                    Reportes
+                  </a>
+                </li>
+              {% endif %}
+              <li>
+                <a href="{% url 'logout' %}" class="px-3 py-2 rounded-md font-medium {% if request.resolver_match.url_name == 'logout' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:text-blue-500{% endif %}">
+                  Cerrar Sesión
+                </a>
+              </li>
+            {% else %}
+              <li>
+                <a href="{% url 'login' %}" class="px-3 py-2 rounded-md font-medium {% if request.resolver_match.url_name == 'login' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:text-blue-500{% endif %}">
+                  Iniciar Sesión
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'register' %}" class="px-3 py-2 rounded-md font-medium {% if request.resolver_match.url_name == 'register' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:text-blue-500{% endif %}">
+                  Registrarse
+                </a>
               </li>
             {% endif %}
-            {% if user.is_superuser %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'authorize_users' %}">Autorizar Usuarios</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'work_students' %}">Usuarios Vista General</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'recover_hours' %}">Recuperar Horas</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'report_users' %}">Reportes</a>
-              </li>
-            {% endif %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
-            </li>
-          {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'register' %}">Registrarse</a>
-            </li>
-          {% endif %}
-        </ul>
+          </ul>
+        </div>
       </div>
     </div>
+    <!-- Menú móvil -->
+    <div id="nav-content" class="md:hidden hidden">
+      <ul class="px-2 pt-2 pb-3 space-y-1">
+        {% if user.is_authenticated %}
+          {% if not user.is_superuser %}
+            <li>
+              <a href="{% url 'add' %}" class="block px-3 py-2 rounded-md text-base font-medium {% if request.resolver_match.url_name == 'add' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700{% endif %}">
+                Horario
+              </a>
+            </li>
+          {% endif %}
+          {% if user.is_superuser %}
+            <li>
+              <a href="{% url 'authorize_users' %}" class="block px-3 py-2 rounded-md text-base font-medium {% if request.resolver_match.url_name == 'authorize_users' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700{% endif %}">
+                Autorizar Usuarios
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'work_students' %}" class="block px-3 py-2 rounded-md text-base font-medium {% if request.resolver_match.url_name == 'work_students' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700{% endif %}">
+                Usuarios Vista General
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'recover_hours' %}" class="block px-3 py-2 rounded-md text-base font-medium {% if request.resolver_match.url_name == 'recover_hours' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700{% endif %}">
+                Recuperar Horas
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'report_users' %}" class="block px-3 py-2 rounded-md text-base font-medium {% if request.resolver_match.url_name == 'report_users' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700{% endif %}">
+                Reportes
+              </a>
+            </li>
+          {% endif %}
+          <li>
+            <a href="{% url 'logout' %}" class="block px-3 py-2 rounded-md text-base font-medium {% if request.resolver_match.url_name == 'logout' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700{% endif %}">
+              Cerrar Sesión
+            </a>
+          </li>
+        {% else %}
+          <li>
+            <a href="{% url 'login' %}" class="block px-3 py-2 rounded-md text-base font-medium {% if request.resolver_match.url_name == 'login' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700{% endif %}">
+              Iniciar Sesión
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'register' %}" class="block px-3 py-2 rounded-md text-base font-medium {% if request.resolver_match.url_name == 'register' %}bg-blue-500 text-white{% else %}text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700{% endif %}">
+              Registrarse
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
   </nav>
-  
+
   <!-- Contenedor principal -->
-  <div class="container mt-4">
+  <main class="max-w-7xl mx-auto mt-20 px-4">
     {% block content %}
     {% endblock %}
-  </div>
-  
-  <!-- Bootstrap JS y dependencias -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+  </main>
+
+  <!-- Script para el toggle del menú móvil -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const btn = document.getElementById('menu-toggle');
+      const navContent = document.getElementById('nav-content');
+      btn.addEventListener('click', function() {
+        navContent.classList.toggle('hidden');
+      });
+    });
+  </script>
 </body>
 </html>
