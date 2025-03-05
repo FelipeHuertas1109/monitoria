@@ -128,13 +128,14 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # Configuración para enviar correos usando Gmail
-EMAIL_BACKEND = 'custom_email_backend.EmailBackend'
+EMAIL_BACKEND = 'api.backends.custom_email_backend.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'fhuertas@unillanos.edu.co'
 EMAIL_HOST_PASSWORD = '160004516'
 DEFAULT_FROM_EMAIL = 'fhuertas@unillanos.edu.co'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
