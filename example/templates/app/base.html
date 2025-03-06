@@ -132,17 +132,6 @@
                   Registrarse
                 </a>
               </li>
-              <li>
-                <a href="{% url 'reset_password' %}"
-                   class="px-3 py-2 rounded-md font-medium
-                   {% if request.resolver_match.url_name == 'login' %}
-                     bg-blue-500 text-white
-                   {% else %}
-                     text-gray-900 dark:text-gray-100 hover:text-blue-500
-                   {% endif %}">
-                  Restablecer Contraseña
-                </a>
-              </li>
             {% endif %}
           </ul>
         </div>
