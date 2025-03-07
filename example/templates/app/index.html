@@ -2,16 +2,47 @@
 {% extends 'app/base.html' %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto py-8 px-4">
-  <h2 class="text-3xl font-bold mb-4 text-gray-800 dark:text-gray-100">Hoy es {{ dia }}</h2>
-  <p class="text-lg text-gray-700 dark:text-gray-300 mb-2">
-    La hora en Bogotá es: <span class="font-medium">{{ hora }}</span>
+<div class="max-w-xl mx-auto mt-10 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+  <!-- Encabezado con icono y día -->
+  <div class="flex items-center space-x-2 mb-4">
+    <!-- Pequeño ícono de calendario (opcional) -->
+    <svg class="h-6 w-6 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 7V3m8 4V3m-9 8h10m-10 4h6M3 7h18m-1 14H4a1 1 0 01-1-1V7h20v13a1 1 0 01-1 1z" />
+    </svg>
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
+      Hoy es {{ dia }}
+    </h2>
+  </div>
+
+  <!-- Información de la hora -->
+  <div class="flex items-center space-x-2 mb-2">
+    <!-- Ícono de reloj (opcional) -->
+    <svg class="h-5 w-5 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 6v6l4 2" />
+    </svg>
+    <p class="text-gray-700 dark:text-gray-300">
+      La hora en Bogotá es: <span class="font-medium text-gray-800 dark:text-gray-100">{{ hora }}</span>
+    </p>
+  </div>
+
+  <!-- Mensaje principal -->
+  <p class="mb-6 text-gray-600 dark:text-gray-400">
+    {{ mensaje }}
   </p>
-  <p class="mb-6 text-gray-600 dark:text-gray-400">{{ mensaje }}</p>
+
+  <!-- Botón para registrar trabajo (si aplica) -->
   {% if mostrar_boton %}
-    <form action="{% url 'mark_work' %}" method="post">
+    <form action="{% url 'mark_work' %}" method="post" class="mt-4">
       {% csrf_token %}
-      <button type="submit" class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow">
+      <button
+        type="submit"
+        class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow focus:outline-none"
+      >
         Registrar Trabajo
       </button>
     </form>

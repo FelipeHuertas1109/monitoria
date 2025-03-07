@@ -1,11 +1,12 @@
 # app/forms.py
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.forms import SetPasswordForm
+
 
 class RecoverHoursForm(forms.Form):
     user = forms.ModelChoiceField(
@@ -119,3 +120,42 @@ class SaturdayForm(BaseDayPreferenceForm):
 class SundayForm(BaseDayPreferenceForm):
     class Meta(BaseDayPreferenceForm.Meta):
         model = Sunday
+
+
+class CustomPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(
+        label="Correo electrónico",
+        max_length=254,
+        widget=forms.EmailInput(
+            attrs={
+                "class": (
+                    "w-full px-3 py-2 border border-gray-300 rounded "
+                    "focus:outline-none focus:ring focus:border-blue-300 "
+                    "dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100"
+                ),
+                "placeholder": "Ingresa tu correo electrónico",
+                "autocomplete": "email",
+            }
+        ),
+    )
+
+class CustomSetPasswordForm(SetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Ajustar atributos de cada campo
+        self.fields['new_password1'].widget.attrs.update({
+            'class': (
+                'w-full px-3 py-2 border border-gray-300 rounded '
+                'focus:outline-none focus:ring focus:border-blue-300 '
+                'dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100'
+            ),
+            'placeholder': 'Nueva contraseña'
+        })
+        self.fields['new_password2'].widget.attrs.update({
+            'class': (
+                'w-full px-3 py-2 border border-gray-300 rounded '
+                'focus:outline-none focus:ring focus:border-blue-300 '
+                'dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100'
+            ),
+            'placeholder': 'Confirmar contraseña'
+        })
