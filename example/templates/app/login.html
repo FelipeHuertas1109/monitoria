@@ -6,63 +6,101 @@
   <h2 class="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">Iniciar Sesión</h2>
   
   <!-- Sección de mensajes -->
-    {% if messages %}
-      <div class="mb-4 space-y-2">
-        {% for message in messages %}
-          <div class="p-4 rounded flex items-center justify-between
-            {% if message.tags == 'error' %}
-              bg-red-200 text-red-800
-            {% elif message.tags == 'success' %}
-              bg-green-200 text-green-800
-            {% else %}
-              bg-blue-200 text-blue-800
-            {% endif %}">
-            <span>{{ message }}</span>
-            <button class="text-xl font-bold focus:outline-none" onclick="this.parentElement.style.display='none'">&times;</button>
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
+  {% if messages %}
+    <div class="mb-4 space-y-2">
+      {% for message in messages %}
+        <div class="message p-4 rounded flex items-center justify-between
+          {% if message.tags == 'error' %}
+            bg-red-200 text-red-800
+          {% elif message.tags == 'success' %}
+            bg-green-200 text-green-800
+          {% else %}
+            bg-blue-200 text-blue-800
+          {% endif %}">
+          <span>{{ message }}</span>
+          <button class="text-xl font-bold focus:outline-none" onclick="this.parentElement.style.display='none'">&times;</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
   
   <form method="POST" class="space-y-4">
     {% csrf_token %}
+    <!-- Campo: Nombre de Usuario -->
     <div>
       <label for="username" class="block text-gray-700 dark:text-gray-300">Nombre de Usuario:</label>
-      <input type="text" id="username" name="username" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300">
+      <input 
+        type="text"
+        id="username"
+        name="username"
+        required
+        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
+      >
     </div>
+    <!-- Campo: Contraseña + Mostrar/Ocultar -->
     <div>
       <label for="password" class="block text-gray-700 dark:text-gray-300">Contraseña:</label>
       <div class="relative">
-        <input type="password" id="password" name="password" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300">
-        <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 focus:outline-none">
-          <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
+        >
+        <button
+          type="button"
+          id="togglePassword"
+          class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 focus:outline-none"
+        >
+          <!-- Ícono de ojo (ver) -->
+          <svg
+            id="eyeIcon"
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
             <path d="M10 3C5.454 3 1.582 6.133.333 10a9.958 9.958 0 0019.334 0C18.418 6.133 14.546 3 10 3zM10 15a5 5 0 110-10 5 5 0 010 10z"/>
           </svg>
-          <svg id="eyeOffIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" viewBox="0 0 20 20" fill="currentColor">
+          <!-- Ícono de ojo tachado (ocultar) -->
+          <svg
+            id="eyeOffIcon"
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 hidden"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
             <path d="M4.293 4.293a1 1 0 011.414 0l9.293 9.293a1 1 0 01-1.414 1.414l-9.293-9.293a1 1 0 010-1.414z" />
             <path d="M10 3C5.454 3 1.582 6.133.333 10a9.958 9.958 0 0019.334 0C18.418 6.133 14.546 3 10 3zm0 12a5 5 0 110-10 5 5 0 010 10z" />
           </svg>
         </button>
       </div>
-    </div>
-
-    <div>
-        <a href="{% url 'reset_password' %}"
-           class="px-3 py-2 rounded-md font-medium
-           {% if request.resolver_match.url_name == 'login' %}
-             bg-blue-500 text-white
-           {% else %}
-             text-gray-900 dark:text-gray-100 hover:text-blue-500
-           {% endif %}">
-          Restablecer Contraseña
+      <!-- Enlace: Restablecer Contraseña -->
+      <div class="mt-2 text-right">
+        <a
+          href="{% url 'reset_password' %}"
+          class="text-sm text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-400"
+        >
+          ¿Olvidaste tu contraseña?
         </a>
-      <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none">Iniciar Sesión</button>
+      </div>
+    </div>
+    <!-- Botón de envío -->
+    <div>
+      <button
+        type="submit"
+        class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none"
+      >
+        Iniciar Sesión
+      </button>
     </div>
   </form>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+  // Mostrar/Ocultar Contraseña
   const togglePassword = document.getElementById("togglePassword");
   const passwordField = document.getElementById("password");
   const eyeIcon = document.getElementById("eyeIcon");
@@ -80,13 +118,13 @@ document.addEventListener("DOMContentLoaded", function() {
       eyeOffIcon.classList.add("hidden");
     }
   });
-  
-  setTimeout(function(){
-  document.querySelectorAll('.message').forEach(function(msg) {
-    msg.style.display = 'none';
-  });
-}, 5000);
 
+  // Ocultar mensajes tras 3 segundos
+  setTimeout(function() {
+    document.querySelectorAll('.message').forEach(function(msg) {
+      msg.style.display = 'none';
+    });
+  }, 3000);
 });
 </script>
 {% endblock %}

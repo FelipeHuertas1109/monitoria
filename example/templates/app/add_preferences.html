@@ -3,267 +3,393 @@
 
 {% block content %}
 <div class="max-w-4xl mx-auto px-4 py-6">
-  <h1 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-100 mb-8">Preferencias Semanales</h1>
+  <h1 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-100 mb-8">
+    Preferencias Semanales
+  </h1>
   <form method="post">
     {% csrf_token %}
     <div id="accordion" class="space-y-4">
-      <!-- Lunes -->
-      <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <button type="button" class="w-full px-4 py-2 text-left text-2xl font-semibold text-gray-800 dark:text-gray-100 focus:outline-none accordion-header" data-target="accordion-lunes">
-          <div class="flex items-center justify-between">
-            <span>Lunes</span>
-            <span class="accordion-icon">
-              <!-- Ícono de expandir (plus) -->
-              <svg class="h-6 w-6 icon-plus" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M12 4v16m8-8H4"/>
-              </svg>
-              <!-- Ícono de contraer (minus), oculto inicialmente -->
-              <svg class="h-6 w-6 icon-minus hidden" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M20 12H4"/>
-              </svg>
-            </span>
-          </div>
-        </button>
-        <div id="accordion-lunes" class="accordion-content hidden px-4 py-4 border-t border-gray-200 dark:border-gray-700">
-          <div class="mb-4">
-            <label class="flex items-center">
-              {{ monday_form.morning }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Mañana</span>
-            </label>
-            <div id="mon-sede-morning-wrapper" class="mt-2">
-              {{ monday_form.sede_morning }}
-            </div>
-          </div>
-          <div>
-            <label class="flex items-center">
-              {{ monday_form.afternoon }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Tarde</span>
-            </label>
-            <div id="mon-sede-afternoon-wrapper" class="mt-2">
-              {{ monday_form.sede_afternoon }}
-            </div>
-          </div>
-        </div>
-      </div>
       <!-- Martes -->
       <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <button type="button" class="w-full px-4 py-2 text-left text-2xl font-semibold text-gray-800 dark:text-gray-100 focus:outline-none accordion-header" data-target="accordion-martes">
+        <button
+          type="button"
+          class="w-full px-4 py-2 text-left text-2xl font-semibold text-gray-800 dark:text-gray-100 focus:outline-none accordion-header"
+          data-target="accordion-martes"
+        >
           <div class="flex items-center justify-between">
             <span>Martes</span>
             <span class="accordion-icon">
-              <svg class="h-6 w-6 icon-plus" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M12 4v16m8-8H4"/>
+              <!-- Flecha abajo (initially visible) -->
+              <svg
+                class="h-6 w-6 icon-down"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M19 9l-7 7-7-7"/>
               </svg>
-              <svg class="h-6 w-6 icon-minus hidden" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M20 12H4"/>
+              <!-- Flecha arriba (hidden initially) -->
+              <svg
+                class="h-6 w-6 icon-up hidden"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 15l7-7 7 7"/>
               </svg>
             </span>
           </div>
         </button>
-        <div id="accordion-martes" class="accordion-content hidden px-4 py-4 border-t border-gray-200 dark:border-gray-700">
-          <div class="mb-4">
-            <label class="flex items-center">
-              {{ tuesday_form.morning }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Mañana</span>
-            </label>
-            <div id="tue-sede-morning-wrapper" class="mt-2">
+        <div
+          id="accordion-martes"
+          class="accordion-content hidden px-4 py-4 border-t border-gray-200 dark:border-gray-700"
+        >
+          <!-- Sección Mañana -->
+          <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded">
+            <div class="flex items-center mb-2">
+              <!-- Ícono sol (opcional) -->
+              <svg
+                class="h-5 w-5 text-yellow-500 mr-2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="12" r="5"/>
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42
+                         1.42M18.36 18.36l1.42 1.42M1
+                         12h2M21 12h2M4.22
+                         19.78l1.42-1.42M18.36
+                         5.64l1.42-1.42"/>
+              </svg>
+              <label class="flex items-center">
+                {{ tuesday_form.morning }}
+                <span class="ml-2 text-gray-700 dark:text-gray-300 font-medium">Mañana</span>
+              </label>
+            </div>
+            <div id="tue-sede-morning-wrapper" class="ml-7">
               {{ tuesday_form.sede_morning }}
             </div>
           </div>
-          <div>
-            <label class="flex items-center">
-              {{ tuesday_form.afternoon }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Tarde</span>
-            </label>
-            <div id="tue-sede-afternoon-wrapper" class="mt-2">
+          <!-- Sección Tarde -->
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded">
+            <div class="flex items-center mb-2">
+              <!-- Ícono luna (opcional) -->
+              <svg
+                class="h-5 w-5 text-indigo-500 mr-2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M20.354 15.354A9 9 0 118.646
+                         3.646 7 7 0 1020.354 15.354z"/>
+              </svg>
+              <label class="flex items-center">
+                {{ tuesday_form.afternoon }}
+                <span class="ml-2 text-gray-700 dark:text-gray-300 font-medium">Tarde</span>
+              </label>
+            </div>
+            <div id="tue-sede-afternoon-wrapper" class="ml-7">
               {{ tuesday_form.sede_afternoon }}
             </div>
           </div>
         </div>
       </div>
+
       <!-- Miércoles -->
       <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <button type="button" class="w-full px-4 py-2 text-left text-2xl font-semibold text-gray-800 dark:text-gray-100 focus:outline-none accordion-header" data-target="accordion-miercoles">
+        <button
+          type="button"
+          class="w-full px-4 py-2 text-left text-2xl font-semibold text-gray-800 dark:text-gray-100 focus:outline-none accordion-header"
+          data-target="accordion-miercoles"
+        >
           <div class="flex items-center justify-between">
             <span>Miércoles</span>
             <span class="accordion-icon">
-              <svg class="h-6 w-6 icon-plus" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M12 4v16m8-8H4"/>
+              <svg
+                class="h-6 w-6 icon-down"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M19 9l-7 7-7-7"/>
               </svg>
-              <svg class="h-6 w-6 icon-minus hidden" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M20 12H4"/>
+              <svg
+                class="h-6 w-6 icon-up hidden"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 15l7-7 7 7"/>
               </svg>
             </span>
           </div>
         </button>
-        <div id="accordion-miercoles" class="accordion-content hidden px-4 py-4 border-t border-gray-200 dark:border-gray-700">
-          <div class="mb-4">
-            <label class="flex items-center">
-              {{ wednesday_form.morning }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Mañana</span>
-            </label>
-            <div id="wed-sede-morning-wrapper" class="mt-2">
+        <div
+          id="accordion-miercoles"
+          class="accordion-content hidden px-4 py-4 border-t border-gray-200 dark:border-gray-700"
+        >
+          <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded">
+            <div class="flex items-center mb-2">
+              <svg
+                class="h-5 w-5 text-yellow-500 mr-2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="12" r="5"/>
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42
+                         1.42M18.36 18.36l1.42 1.42M1
+                         12h2M21 12h2M4.22
+                         19.78l1.42-1.42M18.36
+                         5.64l1.42-1.42"/>
+              </svg>
+              <label class="flex items-center">
+                {{ wednesday_form.morning }}
+                <span class="ml-2 text-gray-700 dark:text-gray-300 font-medium">Mañana</span>
+              </label>
+            </div>
+            <div id="wed-sede-morning-wrapper" class="ml-7">
               {{ wednesday_form.sede_morning }}
             </div>
           </div>
-          <div>
-            <label class="flex items-center">
-              {{ wednesday_form.afternoon }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Tarde</span>
-            </label>
-            <div id="wed-sede-afternoon-wrapper" class="mt-2">
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded">
+            <div class="flex items-center mb-2">
+              <svg
+                class="h-5 w-5 text-indigo-500 mr-2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M20.354 15.354A9 9 0 118.646
+                         3.646 7 7 0 1020.354 15.354z"/>
+              </svg>
+              <label class="flex items-center">
+                {{ wednesday_form.afternoon }}
+                <span class="ml-2 text-gray-700 dark:text-gray-300 font-medium">Tarde</span>
+              </label>
+            </div>
+            <div id="wed-sede-afternoon-wrapper" class="ml-7">
               {{ wednesday_form.sede_afternoon }}
             </div>
           </div>
         </div>
       </div>
+
       <!-- Jueves -->
       <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <button type="button" class="w-full px-4 py-2 text-left text-2xl font-semibold text-gray-800 dark:text-gray-100 focus:outline-none accordion-header" data-target="accordion-jueves">
+        <button
+          type="button"
+          class="w-full px-4 py-2 text-left text-2xl font-semibold text-gray-800 dark:text-gray-100 focus:outline-none accordion-header"
+          data-target="accordion-jueves"
+        >
           <div class="flex items-center justify-between">
             <span>Jueves</span>
             <span class="accordion-icon">
-              <svg class="h-6 w-6 icon-plus" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M12 4v16m8-8H4"/>
+              <svg
+                class="h-6 w-6 icon-down"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M19 9l-7 7-7-7"/>
               </svg>
-              <svg class="h-6 w-6 icon-minus hidden" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M20 12H4"/>
+              <svg
+                class="h-6 w-6 icon-up hidden"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 15l7-7 7 7"/>
               </svg>
             </span>
           </div>
         </button>
-        <div id="accordion-jueves" class="accordion-content hidden px-4 py-4 border-t border-gray-200 dark:border-gray-700">
-          <div class="mb-4">
-            <label class="flex items-center">
-              {{ thursday_form.morning }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Mañana</span>
-            </label>
-            <div id="thu-sede-morning-wrapper" class="mt-2">
+        <div
+          id="accordion-jueves"
+          class="accordion-content hidden px-4 py-4 border-t border-gray-200 dark:border-gray-700"
+        >
+          <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded">
+            <div class="flex items-center mb-2">
+              <svg
+                class="h-5 w-5 text-yellow-500 mr-2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="12" r="5"/>
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42
+                         1.42M18.36 18.36l1.42 1.42M1
+                         12h2M21 12h2M4.22
+                         19.78l1.42-1.42M18.36
+                         5.64l1.42-1.42"/>
+              </svg>
+              <label class="flex items-center">
+                {{ thursday_form.morning }}
+                <span class="ml-2 text-gray-700 dark:text-gray-300 font-medium">Mañana</span>
+              </label>
+            </div>
+            <div id="thu-sede-morning-wrapper" class="ml-7">
               {{ thursday_form.sede_morning }}
             </div>
           </div>
-          <div>
-            <label class="flex items-center">
-              {{ thursday_form.afternoon }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Tarde</span>
-            </label>
-            <div id="thu-sede-afternoon-wrapper" class="mt-2">
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded">
+            <div class="flex items-center mb-2">
+              <svg
+                class="h-5 w-5 text-indigo-500 mr-2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M20.354 15.354A9 9 0 118.646
+                         3.646 7 7 0 1020.354 15.354z"/>
+              </svg>
+              <label class="flex items-center">
+                {{ thursday_form.afternoon }}
+                <span class="ml-2 text-gray-700 dark:text-gray-300 font-medium">Tarde</span>
+              </label>
+            </div>
+            <div id="thu-sede-afternoon-wrapper" class="ml-7">
               {{ thursday_form.sede_afternoon }}
             </div>
           </div>
         </div>
       </div>
+
       <!-- Viernes -->
       <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <button type="button" class="w-full px-4 py-2 text-left text-2xl font-semibold text-gray-800 dark:text-gray-100 focus:outline-none accordion-header" data-target="accordion-viernes">
+        <button
+          type="button"
+          class="w-full px-4 py-2 text-left text-2xl font-semibold text-gray-800 dark:text-gray-100 focus:outline-none accordion-header"
+          data-target="accordion-viernes"
+        >
           <div class="flex items-center justify-between">
             <span>Viernes</span>
             <span class="accordion-icon">
-              <svg class="h-6 w-6 icon-plus" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M12 4v16m8-8H4"/>
+              <svg
+                class="h-6 w-6 icon-down"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M19 9l-7 7-7-7"/>
               </svg>
-              <svg class="h-6 w-6 icon-minus hidden" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M20 12H4"/>
+              <svg
+                class="h-6 w-6 icon-up hidden"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 15l7-7 7 7"/>
               </svg>
             </span>
           </div>
         </button>
-        <div id="accordion-viernes" class="accordion-content hidden px-4 py-4 border-t border-gray-200 dark:border-gray-700">
-          <div class="mb-4">
-            <label class="flex items-center">
-              {{ friday_form.morning }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Mañana</span>
-            </label>
-            <div id="fri-sede-morning-wrapper" class="mt-2">
+        <div
+          id="accordion-viernes"
+          class="accordion-content hidden px-4 py-4 border-t border-gray-200 dark:border-gray-700"
+        >
+          <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded">
+            <div class="flex items-center mb-2">
+              <svg
+                class="h-5 w-5 text-yellow-500 mr-2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="12" r="5"/>
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42
+                         1.42M18.36 18.36l1.42 1.42M1
+                         12h2M21 12h2M4.22
+                         19.78l1.42-1.42M18.36
+                         5.64l1.42-1.42"/>
+              </svg>
+              <label class="flex items-center">
+                {{ friday_form.morning }}
+                <span class="ml-2 text-gray-700 dark:text-gray-300 font-medium">Mañana</span>
+              </label>
+            </div>
+            <div id="fri-sede-morning-wrapper" class="ml-7">
               {{ friday_form.sede_morning }}
             </div>
           </div>
-          <div>
-            <label class="flex items-center">
-              {{ friday_form.afternoon }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Tarde</span>
-            </label>
-            <div id="fri-sede-afternoon-wrapper" class="mt-2">
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded">
+            <div class="flex items-center mb-2">
+              <svg
+                class="h-5 w-5 text-indigo-500 mr-2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M20.354 15.354A9 9 0 118.646
+                         3.646 7 7 0 1020.354 15.354z"/>
+              </svg>
+              <label class="flex items-center">
+                {{ friday_form.afternoon }}
+                <span class="ml-2 text-gray-700 dark:text-gray-300 font-medium">Tarde</span>
+              </label>
+            </div>
+            <div id="fri-sede-afternoon-wrapper" class="ml-7">
               {{ friday_form.sede_afternoon }}
             </div>
           </div>
         </div>
       </div>
-      <!-- Sábado -->
-      <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <button type="button" class="w-full px-4 py-2 text-left text-2xl font-semibold text-gray-800 dark:text-gray-100 focus:outline-none accordion-header" data-target="accordion-sabado">
-          <div class="flex items-center justify-between">
-            <span>Sábado</span>
-            <span class="accordion-icon">
-              <svg class="h-6 w-6 icon-plus" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M12 4v16m8-8H4"/>
-              </svg>
-              <svg class="h-6 w-6 icon-minus hidden" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M20 12H4"/>
-              </svg>
-            </span>
-          </div>
-        </button>
-        <div id="accordion-sabado" class="accordion-content hidden px-4 py-4 border-t border-gray-200 dark:border-gray-700">
-          <div class="mb-4">
-            <label class="flex items-center">
-              {{ saturday_form.morning }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Mañana</span>
-            </label>
-            <div id="sat-sede-morning-wrapper" class="mt-2">
-              {{ saturday_form.sede_morning }}
-            </div>
-          </div>
-          <div>
-            <label class="flex items-center">
-              {{ saturday_form.afternoon }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Tarde</span>
-            </label>
-            <div id="sat-sede-afternoon-wrapper" class="mt-2">
-              {{ saturday_form.sede_afternoon }}
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Domingo -->
-      <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <button type="button" class="w-full px-4 py-2 text-left text-2xl font-semibold text-gray-800 dark:text-gray-100 focus:outline-none accordion-header" data-target="accordion-domingo">
-          <div class="flex items-center justify-between">
-            <span>Domingo</span>
-            <span class="accordion-icon">
-              <svg class="h-6 w-6 icon-plus" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M12 4v16m8-8H4"/>
-              </svg>
-              <svg class="h-6 w-6 icon-minus hidden" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M20 12H4"/>
-              </svg>
-            </span>
-          </div>
-        </button>
-        <div id="accordion-domingo" class="accordion-content hidden px-4 py-4 border-t border-gray-200 dark:border-gray-700">
-          <div class="mb-4">
-            <label class="flex items-center">
-              {{ sunday_form.morning }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Mañana</span>
-            </label>
-            <div id="sun-sede-morning-wrapper" class="mt-2">
-              {{ sunday_form.sede_morning }}
-            </div>
-          </div>
-          <div>
-            <label class="flex items-center">
-              {{ sunday_form.afternoon }}
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Tarde</span>
-            </label>
-            <div id="sun-sede-afternoon-wrapper" class="mt-2">
-              {{ sunday_form.sede_afternoon }}
-            </div>
-          </div>
-        </div>
-      </div>
+
     </div>
+    <!-- Botón final -->
     <div class="mt-8">
-      <button type="submit" class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow focus:outline-none">
+      <button
+        type="submit"
+        class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow focus:outline-none"
+      >
         Guardar Preferencias
       </button>
     </div>
@@ -272,28 +398,28 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function(){
-  // Funcionalidad del acordeón con íconos
+  // Funcionalidad del acordeón con flechas arriba/abajo
   document.querySelectorAll('.accordion-header').forEach(button => {
     button.addEventListener('click', () => {
       const targetId = button.dataset.target;
       const content = document.getElementById(targetId);
       content.classList.toggle('hidden');
 
-      // Alterna los íconos de expandir y contraer
-      const plusIcon = button.querySelector('.icon-plus');
-      const minusIcon = button.querySelector('.icon-minus');
+      // Alterna flechas up/down
+      const downIcon = button.querySelector('.icon-down');
+      const upIcon = button.querySelector('.icon-up');
       if (content.classList.contains('hidden')) {
-        plusIcon.classList.remove('hidden');
-        minusIcon.classList.add('hidden');
+        downIcon.classList.remove('hidden');
+        upIcon.classList.add('hidden');
       } else {
-        plusIcon.classList.add('hidden');
-        minusIcon.classList.remove('hidden');
+        downIcon.classList.add('hidden');
+        upIcon.classList.remove('hidden');
       }
     });
   });
 
-  // Mostrar u ocultar selects según el estado de los checkboxes para cada día
-  const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+  // Mostrar/ocultar selects según los checkboxes
+  const days = ["tue", "wed", "thu", "fri"];
   days.forEach(day => {
     // Mañana
     const morningCheckbox = document.querySelector(`#id_${day}-morning`);

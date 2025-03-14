@@ -10,6 +10,7 @@ import pytz
 from .models import Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, Sede
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.messages import get_messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from datetime import datetime
@@ -209,6 +210,9 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
+    storage = get_messages(request)
+    for _ in storage:
+        pass  # Esto consume los mensajes en la iteración
     messages.success(request, "Has cerrado sesión.")
     return redirect("login")
 

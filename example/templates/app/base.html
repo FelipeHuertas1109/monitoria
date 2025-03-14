@@ -19,25 +19,23 @@
     <div class="max-w-7xl mx-auto px-4">
       <div class="flex items-center justify-between h-16">
         
-        <!-- Logo/Enlace de inicio -->
-        {% if user.is_authenticated and not user.is_superuser %}
-        <div class="flex-shrink-0">
-          <a href="{% url 'index' %}"
-             class="text-xl font-semibold 
-             {% if request.resolver_match.url_name == 'index' %}
-               text-blue-500
-             {% else %}
-               text-gray-900 dark:text-gray-100
-             {% endif %}">
-            Inicio
-          </a>
-        </div>
-        {% endif %}
-        
         <!-- Menú de navegación (desktop) -->
         <div class="hidden md:block flex-1">
           <ul class="flex items-center justify-center space-x-4">
             {% if user.is_authenticated %}
+              <!-- Inicio -->
+              <li>
+                <a href="{% url 'index' %}"
+                   class="px-3 py-2 rounded-md font-medium
+                   {% if request.resolver_match.url_name == 'index' %}
+                     bg-blue-500 text-white
+                   {% else %}
+                     text-gray-900 dark:text-gray-100 hover:text-blue-500
+                   {% endif %}">
+                  Inicio
+                </a>
+              </li>
+              
               {% if not user.is_superuser %}
                 <li>
                   <a href="{% url 'add' %}"
@@ -51,6 +49,7 @@
                   </a>
                 </li>
               {% endif %}
+              
               {% if user.is_superuser %}
                 <li>
                   <a href="{% url 'authorize_users' %}"
@@ -97,6 +96,7 @@
                   </a>
                 </li>
               {% endif %}
+              
               <!-- Cerrar Sesión en rojo -->
               <li>
                 <a href="{% url 'logout' %}"
@@ -152,6 +152,18 @@
     <div id="nav-content" class="md:hidden hidden">
       <ul class="px-2 pt-2 pb-3 space-y-1">
         {% if user.is_authenticated %}
+          <li>
+            <a href="{% url 'index' %}"
+               class="block px-3 py-2 rounded-md text-base font-medium
+               {% if request.resolver_match.url_name == 'index' %}
+                 bg-blue-500 text-white
+               {% else %}
+                 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700
+               {% endif %}">
+              Inicio
+            </a>
+          </li>
+          
           {% if not user.is_superuser %}
             <li>
               <a href="{% url 'add' %}"
